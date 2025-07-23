@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <!-- Project coordinates and packaging type for the match-management-api -->
+    <modelVersion>4.0.0</modelVersion>
+
+    <!-- Spring Boot parent POM: centralizes plugin and dependency versions for Spring-based projects -->
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.5.3</version>
+        <!-- relativePath left empty to force Maven to resolve from Maven Central -->
+        <relativePath/>
+    </parent>
+
+    <!-- Maven coordinates: unique identifiers for the current project -->
+    <groupId>com.example</groupId>
+    <artifactId>match-management-api</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+
+    <!-- Human-readable name and optional description -->
+    <name>match-management-api</name>
+    <description>match-management-api</description>
+
+    <!-- Optional project homepage or documentation URL (can remain empty) -->
+    <url/>
+
+    <!-- === License metadata (MIT) for public distribution === -->
+    <licenses>
+        <license>
+            <name>MIT License</name>
+            <url>https://opensource.org/licenses/MIT</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <!-- === Developer information for project attribution === -->
+    <developers>
+        <developer>
+            <id>cbampoulis</id>
+            <name>Christos Bampoulis</name>
+            <email>chrisb260@gmail.com</email>
+        </developer>
+    </developers>
+
+    <!-- === Source Control Management (SCM) metadata === -->
+    <scm>
+        <url>https://github.com/ChristosBaboulis/match-management-api</url>
+        <connection>scm:git:https://github.com/ChristosBaboulis/match-management-api.git</connection>
+        <developerConnection>scm:git:git@github.com:ChristosBaboulis/match-management-api.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <!-- === Centralized project properties: Java version, encoding, plugin defaults === -->
+    <properties>
+        <java.version>21</java.version>
+    </properties>
+
+    <!-- === Dependencies === -->
+    <dependencies>
+
+        <!-- Spring Data JPA: integrates Hibernate and provides repository abstractions for relational databases -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
+        </dependency>
+
+        <!-- Spring Web: enables REST controllers, JSON handling, embedded Tomcat, and HTTP request/response support -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
+        </dependency>
+
+        <!-- Spring Boot DevTools: enables automatic restarts and development-time features like LiveReload and template reloading -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-devtools</artifactId>
+            <scope>runtime</scope>          <!-- Only used at runtime, not needed for compilation -->
+            <optional>true</optional>       <!-- Not required for production or by other modules -->
+        </dependency>
+
+        <!-- PostgreSQL JDBC Driver: enables runtime connection to PostgreSQL databases via JDBC -->
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Lombok: generates boilerplate code (getters, setters, constructors, etc.) at compile-time -->
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <optional>true</optional>   <!-- Not required at runtime, used only during compilation -->
+        </dependency>
+
+        <!-- Spring Boot Test Starter: provides JUnit, Mockito, Spring Test utilities for unit and integration testing -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+            <scope>test</scope>     <!-- Only used during test phase -->
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+
+            <!-- Maven Compiler Plugin: compiles Java code and enables annotation processing for Lombok -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
+
+            <!-- Spring Boot Maven Plugin: enables spring-boot:run and executable .jar packaging -->
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <excludes>
+                        <exclude>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                        </exclude>
+                    </excludes>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+
+</project>
