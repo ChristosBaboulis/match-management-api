@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  db:
+    image: postgres:16
+    container_name: matchdb
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: secret
+      POSTGRES_DB: matchdb
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: match_management_app
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://db:5432/matchdb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: secret
+    restart: unless-stopped
+
+volumes:
+  pgdata:
+
+#Instructions to run the Match Management API with Docker and PostgreSQL:
+#
+#  1. Make sure Docker Desktop is installed and running.
+#
+#2. Before starting, build the application:
+#
+#  mvn clean package
+#
+#3. To start the application and database for the first time (or after code changes), run:
+#
+#  docker-compose up --build -d
+#
+#  This will:
+#    - Start the PostgreSQL database container
+#    - Build the app Docker image from the Dockerfile
+#    - Start the app container and expose it on port 8080
+#
+#4. Open your browser and go to:
+#
+#  http://localhost:8080
+#
+#  to verify that the app is running.
+#
+#5. To start **only** the app (without affecting the running database container), run:
+#
+#  docker-compose up -d app
+#
+#6. The database container will stay up unless you manually stop it with:
+#
+#  docker-compose stop db
+#
+#7. To shut down the app:
+#
+#  docker-compose stop app
+#
+#8. To shut everything down (app + database), use:
+#
+#  docker-compose down
+#
+#9. To see which containers are up:
+#
+#  docker ps
+#10 To see logs:
+#
+#  docker-compose logs -f app

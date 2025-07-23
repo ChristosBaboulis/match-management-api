@@ -87,6 +87,13 @@
             <scope>runtime</scope>
         </dependency>
 
+        <!-- H2 Database: in-memory SQL database for unit testing (requires corresponding JDBC driver) -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>		<!-- Only needed when the unit tests run -->
+        </dependency>
+
         <!-- Lombok: generates boilerplate code (getters, setters, constructors, etc.) at compile-time -->
         <dependency>
             <groupId>org.projectlombok</groupId>
