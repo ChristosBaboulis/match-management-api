@@ -3,6 +3,7 @@ package com.example.matchmanagementapi;
 import com.example.matchmanagementapi.domain.Match;
 import com.example.matchmanagementapi.domain.MatchOdds;
 import com.example.matchmanagementapi.domain.Sport;
+import com.example.matchmanagementapi.repository.MatchOddsRepository;
 import com.example.matchmanagementapi.repository.MatchRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +35,12 @@ public class Initializer {
     @Autowired
     private MatchRepository matchRepository;
 
+    @Autowired
+    private MatchOddsRepository matchOddsRepository;
+
     @BeforeEach
     public void setup(){
+        matchOddsRepository.deleteAll();
         matchRepository.deleteAll();
 
         match = new Match(
