@@ -2,7 +2,9 @@ package com.example.matchmanagementapi;
 
 import com.example.matchmanagementapi.domain.Match;
 import com.example.matchmanagementapi.domain.Sport;
+import com.example.matchmanagementapi.repository.MatchRepository;
 import org.junit.jupiter.api.BeforeEach;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
@@ -26,8 +28,13 @@ public class Initializer {
     protected LocalTime testMatchTimeBefore = LocalTime.of(11, 0);
     protected LocalTime testMatchTimeAfter = LocalTime.of(13, 0);
 
+    @Autowired
+    private MatchRepository matchRepository;
+
     @BeforeEach
     public void setup(){
+        matchRepository.deleteAll();
+
         match = new Match(
                 description,
                 testMatchDate,

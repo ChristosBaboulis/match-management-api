@@ -47,7 +47,7 @@ public interface MatchRepository extends JpaRepository<Match, Long> {
 
     @Modifying
     @Transactional
-    @Query("UPDATE Match m SET m.description = :description WHERE m.Id = :id")
+    @Query("UPDATE Match m SET m.description = :description WHERE m.id = :id")
     void updateDescriptionById(@Param("id") long id, @Param("description") String description);
 
     @Modifying
@@ -62,7 +62,7 @@ public interface MatchRepository extends JpaRepository<Match, Long> {
 
     @Modifying
     @Transactional
-    @Query("UPDATE Match m SET m.teamA = :teamA WHERE m.Id = :id")
+    @Query("UPDATE Match m SET m.teamA = :teamA WHERE m.id = :id")
     void updateTeamAById(@Param("id") Long id, @Param("teamA") String teamA);
 
     @Modifying

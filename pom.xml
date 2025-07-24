@@ -108,6 +108,14 @@
             <scope>test</scope>     <!-- Only used during test phase -->
         </dependency>
 
+        <!-- Mockito Inline: enables mocking of final, static, and private methods in modern JDKs such as Java 21 -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-inline</artifactId>
+            <version>5.2.0</version>
+            <scope>test</scope> <!-- Only used during test phase -->
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -138,6 +146,18 @@
                             <artifactId>lombok</artifactId>
                         </exclude>
                     </excludes>
+                </configuration>
+            </plugin>
+
+            <!-- Maven Surefire Plugin: runs unit tests and allows attaching Java agents -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.2.5</version>
+                <configuration>
+                    <argLine>
+                        -javaagent:C:\Users\CHRIST~1\.m2\repository\net\bytebuddy\byte-buddy-agent\1.17.6\byte-buddy-agent-1.17.6.jar
+                    </argLine>
                 </configuration>
             </plugin>
 
