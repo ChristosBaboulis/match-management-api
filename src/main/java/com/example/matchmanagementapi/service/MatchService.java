@@ -102,22 +102,22 @@ public class MatchService {
         return matchRepository.count();
     }
 
-    public void update(Match match){
+    public Match update(Match match){
         if(!((match.getTeamA() + "-" + match.getTeamB()).equals(match.getDescription()))){
             match.setDescription(generateDescription(match.getTeamA(), match.getTeamB()));
         }
 
-        matchRepository.save(match);
+        return matchRepository.save(match);
     }
 
-    public void update(List<Match> matchList){
+    public List<Match> update(List<Match> matchList){
         for (Match match : matchList){
             if(!((match.getTeamA() + "-" + match.getTeamB()).equals(match.getDescription()))){
                 match.setDescription(generateDescription(match.getTeamA(), match.getTeamB()));
             }
         }
 
-        matchRepository.saveAll(matchList);
+        return matchRepository.saveAll(matchList);
     }
 
     public void updateMatchDate(Long id, LocalDate matchDate){
