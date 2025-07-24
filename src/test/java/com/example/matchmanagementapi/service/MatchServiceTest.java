@@ -195,7 +195,7 @@ public class MatchServiceTest extends Initializer {
             ids.add(mAdded.getId());
         }
 
-        matchService.deleteById(ids);
+        matchService.deleteByIds(ids);
         List<Match> matchList = matchService.findAll();
         Assertions.assertEquals(0, matchList.size());
     }

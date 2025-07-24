@@ -1,7 +1,6 @@
 package com.example.matchmanagementapi.repository;
 
 import com.example.matchmanagementapi.Initializer;
-import com.example.matchmanagementapi.domain.Match;
 import com.example.matchmanagementapi.domain.MatchOdds;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -17,9 +16,13 @@ import java.util.Optional;
 public class MatchOddsRepositoryTest extends Initializer {
     @Autowired
     private MatchOddsRepository matchOddsRepository;
+    @Autowired
+    private MatchRepository matchRepository;
 
     @Test
     void testSaveFindByMatch(){
+        matchRepository.save(match);
+        matchRepository.save(match);
         matchOddsRepository.save(matchOdds);
         Assertions.assertNotNull(matchOdds);
 
@@ -29,6 +32,7 @@ public class MatchOddsRepositoryTest extends Initializer {
 
     @Test
     void testFindByMatchAndOdd(){
+        matchRepository.save(match);
         matchOddsRepository.save(matchOdds);
         Assertions.assertNotNull(matchOdds);
 
@@ -39,6 +43,7 @@ public class MatchOddsRepositoryTest extends Initializer {
 
     @Test
     void testFindByOdd(){
+        matchRepository.save(match);
         matchOddsRepository.save(matchOdds);
         Assertions.assertNotNull(matchOdds);
 
@@ -49,6 +54,7 @@ public class MatchOddsRepositoryTest extends Initializer {
 
     @Test
     void testFindByOddGreaterThan(){
+        matchRepository.save(match);
         matchOddsRepository.save(matchOdds);
         Assertions.assertNotNull(matchOdds);
 
@@ -59,6 +65,7 @@ public class MatchOddsRepositoryTest extends Initializer {
 
     @Test
     void testFindByOddGreaterThanEqual(){
+        matchRepository.save(match);
         matchOddsRepository.save(matchOdds);
         Assertions.assertNotNull(matchOdds);
 
@@ -69,6 +76,7 @@ public class MatchOddsRepositoryTest extends Initializer {
 
     @Test
     void testFindByOddLessThan(){
+        matchRepository.save(match);
         matchOddsRepository.save(matchOdds);
         Assertions.assertNotNull(matchOdds);
 
@@ -79,6 +87,7 @@ public class MatchOddsRepositoryTest extends Initializer {
 
     @Test
     void testFindByOddLessThanEqual(){
+        matchRepository.save(match);
         matchOddsRepository.save(matchOdds);
         Assertions.assertNotNull(matchOdds);
 
@@ -89,6 +98,7 @@ public class MatchOddsRepositoryTest extends Initializer {
 
     @Test
     void testFindByOddBetween(){
+        matchRepository.save(match);
         matchOddsRepository.save(matchOdds);
         Assertions.assertNotNull(matchOdds);
 
@@ -99,6 +109,7 @@ public class MatchOddsRepositoryTest extends Initializer {
 
     @Test
     void testFindBySpecifier(){
+        matchRepository.save(match);
         matchOddsRepository.save(matchOdds);
         Assertions.assertNotNull(matchOdds);
 
@@ -109,6 +120,7 @@ public class MatchOddsRepositoryTest extends Initializer {
 
     @Test
     void testFindBySpecifierAndOdd(){
+        matchRepository.save(match);
         matchOddsRepository.save(matchOdds);
         Assertions.assertNotNull(matchOdds);
 
@@ -120,6 +132,7 @@ public class MatchOddsRepositoryTest extends Initializer {
 
     @Test
     void testFindBySpecifierAndOddGreaterThan(){
+        matchRepository.save(match);
         matchOddsRepository.save(matchOdds);
         Assertions.assertNotNull(matchOdds);
 
@@ -131,6 +144,7 @@ public class MatchOddsRepositoryTest extends Initializer {
 
     @Test
     void testFindBySpecifierAndOddGreaterThanEqual(){
+        matchRepository.save(match);
         matchOddsRepository.save(matchOdds);
         Assertions.assertNotNull(matchOdds);
 
@@ -142,6 +156,7 @@ public class MatchOddsRepositoryTest extends Initializer {
 
     @Test
     void testFindBySpecifierAndOddLessThan(){
+        matchRepository.save(match);
         matchOddsRepository.save(matchOdds);
         Assertions.assertNotNull(matchOdds);
 
@@ -153,6 +168,7 @@ public class MatchOddsRepositoryTest extends Initializer {
 
     @Test
     void testFindBySpecifierAndOddLessThanEqual(){
+        matchRepository.save(match);
         matchOddsRepository.save(matchOdds);
         Assertions.assertNotNull(matchOdds);
 
@@ -164,6 +180,7 @@ public class MatchOddsRepositoryTest extends Initializer {
 
     @Test
     void testUpdateSpecifierById(){
+        matchRepository.save(match);
         MatchOdds savedMatchOdds = matchOddsRepository.save(matchOdds);
         Assertions.assertNotNull(matchOdds);
 
@@ -179,6 +196,7 @@ public class MatchOddsRepositoryTest extends Initializer {
 
     @Test
     void testUpdateOddById(){
+        matchRepository.save(match);
         MatchOdds savedMatchOdds = matchOddsRepository.save(matchOdds);
         Assertions.assertNotNull(matchOdds);
 

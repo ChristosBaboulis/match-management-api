@@ -18,7 +18,7 @@ public class MatchOdds {
     private Long id;
 
     @NonNull
-    @ManyToOne(cascade = {CascadeType.PERSIST, CascadeType.MERGE}, fetch = FetchType.LAZY, optional = false)
+    @ManyToOne(cascade = {CascadeType.MERGE}, fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "match_id", nullable = false)
     private Match match;
 

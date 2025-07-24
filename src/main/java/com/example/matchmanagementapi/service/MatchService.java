@@ -94,7 +94,7 @@ public class MatchService {
         matchRepository.deleteById(id);
     }
 
-    public void deleteById(List<Long> ids){
+    public void deleteByIds(List<Long> ids){
         matchRepository.deleteAllById(ids);
     }
 
