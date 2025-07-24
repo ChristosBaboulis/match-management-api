@@ -20,7 +20,7 @@ public class Match {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Setter(AccessLevel.NONE)
-    private long id;
+    private Long id;
 
     @NonNull
     @Column(name="description", nullable=false)
@@ -44,5 +44,6 @@ public class Match {
 
     @NonNull
     @Column(name="sport", nullable = false)
+    @Enumerated(EnumType.ORDINAL)
     private Sport sport;
 }

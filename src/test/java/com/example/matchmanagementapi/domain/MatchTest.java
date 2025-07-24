@@ -1,5 +1,6 @@
 package com.example.matchmanagementapi.domain;
 
+import com.example.matchmanagementapi.Initializer;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -11,7 +12,7 @@ import java.time.LocalTime;
 
 @ActiveProfiles("test")
 @SpringBootTest
-public class MatchTest {
+public class MatchTest extends Initializer {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     LocalDate testMatchDate = LocalDate.parse("31/03/2021", formatter);
     LocalTime testMatchTime = LocalTime.of(12, 0);
@@ -19,7 +20,7 @@ public class MatchTest {
 
     @Test
     public void testClassFunctionality() {
-        Match match = new Match();
+        Match match1 = new Match();
 
         Match match2 = new Match(
                 "OSFP-PAO",
@@ -30,7 +31,7 @@ public class MatchTest {
                 testSport
         );
 
-        Assertions.assertNotNull(match);
+        Assertions.assertNotNull(match1);
         Assertions.assertNotNull(match2);
 
         Assertions.assertEquals("OSFP-PAO", match2.getDescription());
@@ -40,6 +41,6 @@ public class MatchTest {
         Assertions.assertEquals("OSFP", match2.getTeamA());
         Assertions.assertEquals("PAO", match2.getTeamB());
 
-        Assertions.assertNotEquals(match, match2);
+        Assertions.assertNotEquals(match1, match2);
     }
 }
