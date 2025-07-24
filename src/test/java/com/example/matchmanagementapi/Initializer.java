@@ -1,6 +1,7 @@
 package com.example.matchmanagementapi;
 
 import com.example.matchmanagementapi.domain.Match;
+import com.example.matchmanagementapi.domain.MatchOdds;
 import com.example.matchmanagementapi.domain.Sport;
 import com.example.matchmanagementapi.repository.MatchRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -28,6 +29,8 @@ public class Initializer {
     protected LocalTime testMatchTimeBefore = LocalTime.of(11, 0);
     protected LocalTime testMatchTimeAfter = LocalTime.of(13, 0);
 
+    protected MatchOdds matchOdds;
+
     @Autowired
     private MatchRepository matchRepository;
 
@@ -42,6 +45,12 @@ public class Initializer {
                 teamA,
                 teamB,
                 testSport
+        );
+
+        matchOdds = new MatchOdds(
+                match,
+                "X",
+                1.5
         );
     }
 }
