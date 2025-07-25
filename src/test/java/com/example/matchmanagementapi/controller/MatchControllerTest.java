@@ -20,7 +20,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -41,6 +41,7 @@ public class MatchControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(matchController).build();
     }
 
+    // <editor-fold desc="GET endpoints">
     @Test
     void testGetMatchesByIds() throws Exception {
         // Arrange
@@ -49,8 +50,8 @@ public class MatchControllerTest {
         matchDTO.setDescription("OSFP-PAO");
         matchDTO.setMatchDate(LocalDate.of(2025, 8, 1));
         matchDTO.setMatchTime(LocalTime.of(20, 0));
-        matchDTO.setTeamA("TeamA");
-        matchDTO.setTeamB("TeamB");
+        matchDTO.setTeamA("OSFP");
+        matchDTO.setTeamB("PAO");
 
         List<Long> ids = List.of(1L, 2L, 3L);
 
@@ -75,8 +76,8 @@ public class MatchControllerTest {
         matchDTO.setDescription("OSFP-PAO");
         matchDTO.setMatchDate(LocalDate.of(2025, 8, 1));
         matchDTO.setMatchTime(LocalTime.of(20, 0));
-        matchDTO.setTeamA("TeamA");
-        matchDTO.setTeamB("TeamB");
+        matchDTO.setTeamA("OSFP");
+        matchDTO.setTeamB("PAO");
 
         Mockito.when(matchService.findAll()).thenReturn(List.of());
         Mockito.when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
@@ -97,10 +98,10 @@ public class MatchControllerTest {
         matchDTO.setDescription("OSFP-PAO");
         matchDTO.setMatchDate(LocalDate.of(2025, 8, 1));
         matchDTO.setMatchTime(LocalTime.of(20, 0));
-        matchDTO.setTeamA("TeamA");
-        matchDTO.setTeamB("TeamB");
+        matchDTO.setTeamA("OSFP");
+        matchDTO.setTeamB("PAO");
 
-        Match match = new Match("OSFP-PAO", LocalDate.of(2025, 8, 1), LocalTime.of(20, 0), "Team A", "Team B", Sport.Football);
+        Match match = new Match("OSFP-PAO", LocalDate.of(2025, 8, 1), LocalTime.of(20, 0), "OSFP", "PAO", Sport.Football);
         Mockito.when(matchService.find(matchId)).thenReturn(match);
         Mockito.when(matchMapper.toDTO(match)).thenReturn(matchDTO);
 
@@ -121,8 +122,8 @@ public class MatchControllerTest {
         dto.setDescription(description);
         dto.setMatchDate(LocalDate.of(2025, 8, 1));
         dto.setMatchTime(LocalTime.of(20, 0));
-        dto.setTeamA("TeamA");
-        dto.setTeamB("TeamB");
+        dto.setTeamA("OSFP");
+        dto.setTeamB("PAO");
 
         Mockito.when(matchService.findByDescription(description)).thenReturn(List.of());
         Mockito.when(matchMapper.toDTO(List.of())).thenReturn(List.of(dto));
@@ -142,8 +143,8 @@ public class MatchControllerTest {
         matchDTO.setDescription("OSFP-PAO");
         matchDTO.setMatchDate(LocalDate.of(2025, 8, 1));
         matchDTO.setMatchTime(LocalTime.of(18, 0));
-        matchDTO.setTeamA("TeamA");
-        matchDTO.setTeamB("TeamB");
+        matchDTO.setTeamA("OSFP");
+        matchDTO.setTeamB("PAO");
 
         Mockito.when(matchService.findByMatchDate(LocalDate.of(2025, 8, 1))).thenReturn(List.of());
         Mockito.when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
@@ -167,8 +168,8 @@ public class MatchControllerTest {
         matchDTO.setDescription("OSFP-PAO");
         matchDTO.setMatchDate(LocalDate.of(2025, 8, 5));
         matchDTO.setMatchTime(LocalTime.of(20, 0));
-        matchDTO.setTeamA("TeamA");
-        matchDTO.setTeamB("TeamB");
+        matchDTO.setTeamA("OSFP");
+        matchDTO.setTeamB("PAO");
 
         Mockito.when(matchService.findByMatchDateBetween(startDate, endDate)).thenReturn(List.of());
         Mockito.when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
@@ -192,8 +193,8 @@ public class MatchControllerTest {
         matchDTO.setDescription("OSFP-PAO");
         matchDTO.setMatchDate(LocalDate.of(2025, 7, 25));
         matchDTO.setMatchTime(LocalTime.of(18, 30));
-        matchDTO.setTeamA("TeamA");
-        matchDTO.setTeamB("TeamB");
+        matchDTO.setTeamA("OSFP");
+        matchDTO.setTeamB("PAO");
 
         Mockito.when(matchService.findByMatchDateBefore(matchDate)).thenReturn(List.of());
         Mockito.when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
@@ -216,8 +217,8 @@ public class MatchControllerTest {
         matchDTO.setDescription("OSFP-PAO");
         matchDTO.setMatchDate(LocalDate.of(2025, 8, 10));
         matchDTO.setMatchTime(LocalTime.of(20, 0));
-        matchDTO.setTeamA("TeamA");
-        matchDTO.setTeamB("TeamB");
+        matchDTO.setTeamA("OSFP");
+        matchDTO.setTeamB("PAO");
 
         Mockito.when(matchService.findByMatchDateAfter(matchDate)).thenReturn(List.of());
         Mockito.when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
@@ -240,8 +241,8 @@ public class MatchControllerTest {
         matchDTO.setDescription("OSFP-PAO");
         matchDTO.setMatchDate(LocalDate.of(2025, 8, 1));
         matchDTO.setMatchTime(matchTime);
-        matchDTO.setTeamA("TeamA");
-        matchDTO.setTeamB("TeamB");
+        matchDTO.setTeamA("OSFP");
+        matchDTO.setTeamB("PAO");
 
         Mockito.when(matchService.findByMatchTime(matchTime)).thenReturn(List.of());
         Mockito.when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
@@ -254,4 +255,230 @@ public class MatchControllerTest {
                 .andExpect(jsonPath("$[0].description").value("OSFP-PAO"));
     }
 
+    @Test
+    void testGetMatchesByTimeBefore() throws Exception {
+        // Arrange
+        LocalTime matchTime = LocalTime.of(20, 0);
+
+        MatchDTO matchDTO = new MatchDTO();
+        matchDTO.setId(1L);
+        matchDTO.setDescription("OSFP-PAO");
+        matchDTO.setMatchDate(LocalDate.of(2025, 8, 1));
+        matchDTO.setMatchTime(LocalTime.of(18, 0));
+        matchDTO.setTeamA("OSFP");
+        matchDTO.setTeamB("PAO");
+
+        Mockito.when(matchService.findByMatchTimeBefore(matchTime)).thenReturn(List.of());
+        Mockito.when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
+
+        // Act & Assert
+        mockMvc.perform(get("/api/matches/searchByTimeBefore")
+                        .param("matchTime", "20:00:00")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].description").value("OSFP-PAO"));
+    }
+
+    @Test
+    void testGetMatchesByTimeAfter() throws Exception {
+        // Arrange
+        LocalTime matchTime = LocalTime.of(20, 0);
+
+        MatchDTO matchDTO = new MatchDTO();
+        matchDTO.setId(1L);
+        matchDTO.setDescription("OSFP-PAO");
+        matchDTO.setMatchDate(LocalDate.of(2025, 8, 1));
+        matchDTO.setMatchTime(LocalTime.of(21, 0));
+        matchDTO.setTeamA("OSFP");
+        matchDTO.setTeamB("PAO");
+
+        Mockito.when(matchService.findByMatchTimeAfter(matchTime)).thenReturn(List.of());
+        Mockito.when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
+
+        // Act & Assert
+        mockMvc.perform(get("/api/matches/searchByTimeAfter")
+                        .param("matchTime", "20:00:00")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].description").value("OSFP-PAO"));
+    }
+
+    @Test
+    void testGetMatchesByFirstTeam() throws Exception {
+        // Arrange
+        String teamA = "OSFP";
+
+        MatchDTO matchDTO = new MatchDTO();
+        matchDTO.setId(1L);
+        matchDTO.setDescription("OSFP-PAO");
+        matchDTO.setMatchDate(LocalDate.of(2025, 8, 1));
+        matchDTO.setMatchTime(LocalTime.of(20, 0));
+        matchDTO.setTeamA(teamA);
+        matchDTO.setTeamB("PAO");
+
+        Mockito.when(matchService.findByTeamA(teamA)).thenReturn(List.of());
+        Mockito.when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
+
+        // Act & Assert
+        mockMvc.perform(get("/api/matches/searchByFirstTeam")
+                        .param("teamA", teamA)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].description").value("OSFP-PAO"));
+    }
+
+    @Test
+    void testGetMatchesBySecondTeam() throws Exception {
+        // Arrange
+        String teamB = "PAO";
+
+        MatchDTO matchDTO = new MatchDTO();
+        matchDTO.setId(1L);
+        matchDTO.setDescription("OSFP-PAO");
+        matchDTO.setMatchDate(LocalDate.of(2025, 8, 1));
+        matchDTO.setMatchTime(LocalTime.of(20, 0));
+        matchDTO.setTeamA("OSFP");
+        matchDTO.setTeamB(teamB);
+
+        Mockito.when(matchService.findByTeamB(teamB)).thenReturn(List.of());
+        Mockito.when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
+
+        // Act & Assert
+        mockMvc.perform(get("/api/matches/searchBySecondTeam")
+                        .param("teamB", teamB)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].description").value("OSFP-PAO"));
+    }
+
+    @Test
+    void testGetMatchesByTeams() throws Exception {
+        // Arrange
+        String teamA = "OSFP";
+        String teamB = "PAO";
+
+        MatchDTO matchDTO = new MatchDTO();
+        matchDTO.setId(1L);
+        matchDTO.setDescription("OSFP-PAO");
+        matchDTO.setMatchDate(LocalDate.of(2025, 8, 1));
+        matchDTO.setMatchTime(LocalTime.of(20, 0));
+        matchDTO.setTeamA(teamA);
+        matchDTO.setTeamB(teamB);
+
+        Mockito.when(matchService.findByTeamAAndTeamB(teamA, teamB)).thenReturn(List.of());
+        Mockito.when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
+
+        // Act & Assert
+        mockMvc.perform(get("/api/matches/searchByTeams")
+                        .param("teamA", teamA)
+                        .param("teamB", teamB)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].description").value("OSFP-PAO"));
+    }
+
+    @Test
+    void testGetMatchesBySport() throws Exception {
+        // Arrange
+        Sport sport = Sport.Football;
+
+        MatchDTO matchDTO = new MatchDTO();
+        matchDTO.setId(1L);
+        matchDTO.setDescription("OSFP-PAO");
+        matchDTO.setMatchDate(LocalDate.of(2025, 8, 1));
+        matchDTO.setMatchTime(LocalTime.of(20, 0));
+        matchDTO.setTeamA("OSFP");
+        matchDTO.setTeamB("PAO");
+
+        Mockito.when(matchService.findBySport(sport)).thenReturn(List.of());
+        Mockito.when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
+
+        // Act & Assert
+        mockMvc.perform(get("/api/matches/searchBySport")
+                        .param("sport", "Football")
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].description").value("OSFP-PAO"));
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="POST endpoints">
+    @Test
+    void testSaveAllMatches() throws Exception {
+        // Arrange
+        MatchDTO matchDTO = new MatchDTO();
+        matchDTO.setId(1L);
+        matchDTO.setDescription("OSFP-PAO");
+        matchDTO.setMatchDate(LocalDate.of(2025, 8, 1));
+        matchDTO.setMatchTime(LocalTime.of(20, 0));
+        matchDTO.setTeamA("OSFP");
+        matchDTO.setTeamB("PAO");
+        matchDTO.setSport(Sport.Football);
+
+        Match matchEntity = new Match("OSFP-PAO", matchDTO.getMatchDate(), matchDTO.getMatchTime(), "OSFP", "PAO", Sport.Football);
+
+        Mockito.when(matchMapper.toEntity(List.of(matchDTO))).thenReturn(List.of(matchEntity));
+        Mockito.when(matchService.saveAll(List.of(matchEntity))).thenReturn(List.of(matchEntity));
+        Mockito.when(matchMapper.toDTO(List.of(matchEntity))).thenReturn(List.of(matchDTO));
+
+        // Act & Assert
+        mockMvc.perform(
+                        post("/api/matches/saveAll")
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content("""
+                        [
+                          {
+                            "id": 1,
+                            "description": "OSFP-PAO",
+                            "matchDate": "2025-08-01",
+                            "matchTime": "20:00:00",
+                            "teamA": "OSFP",
+                            "teamB": "PAO",
+                            "sport": "Football"
+                          }
+                        ]
+                    """)
+                                .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].description").value("OSFP-PAO"));
+    }
+
+    @Test
+    void testSaveMatch() throws Exception {
+        // Arrange
+        MatchDTO matchDTO = new MatchDTO();
+        matchDTO.setId(1L);
+        matchDTO.setDescription("OSFP-PAO");
+        matchDTO.setMatchDate(LocalDate.of(2025, 8, 1));
+        matchDTO.setMatchTime(LocalTime.of(20, 0));
+        matchDTO.setTeamA("OSFP");
+        matchDTO.setTeamB("PAO");
+        matchDTO.setSport(Sport.Football);
+
+        Match matchEntity = new Match("OSFP-PAO", matchDTO.getMatchDate(), matchDTO.getMatchTime(), "OSFP", "PAO", Sport.Football);
+
+        Mockito.when(matchMapper.toEntity(matchDTO)).thenReturn(matchEntity);
+        Mockito.when(matchService.save(matchEntity)).thenReturn(matchEntity);
+        Mockito.when(matchMapper.toDTO(matchEntity)).thenReturn(matchDTO);
+
+        // Act & Assert
+        mockMvc.perform(post("/api/matches")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                        {
+                          "id": 1,
+                          "description": "OSFP-PAO",
+                          "matchDate": "2025-08-01",
+                          "matchTime": "20:00:00",
+                          "teamA": "OSFP",
+                          "teamB": "PAO",
+                          "sport": "Football"
+                        }
+                    """)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.description").value("OSFP-PAO"));
+    }
+
+    // </editor-fold>
 }
