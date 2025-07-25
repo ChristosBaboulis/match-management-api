@@ -10,14 +10,14 @@ import java.time.LocalTime;
 @Table(name = "matches")
 @Getter
 @Setter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @RequiredArgsConstructor
 @ToString
 @EqualsAndHashCode(exclude = {"id"})
 public class Match {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.NONE)
+    @Setter(AccessLevel.PROTECTED)
     private Long id;
 
     @NonNull

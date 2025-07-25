@@ -8,13 +8,13 @@ import lombok.*;
 @Getter
 @Setter
 @RequiredArgsConstructor
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 @ToString
 @EqualsAndHashCode
 public class MatchOdds {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Setter(AccessLevel.NONE)
+    @Setter(AccessLevel.PROTECTED)
     private Long id;
 
     @NonNull
