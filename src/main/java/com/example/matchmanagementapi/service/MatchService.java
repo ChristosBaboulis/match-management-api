@@ -85,10 +85,6 @@ public class MatchService {
         return matchRepository.save(match);
     }
 
-    public void delete(Match match){
-        matchRepository.delete(match);
-    }
-
     public void deleteById(Long id){
         find(id);
         matchRepository.deleteById(id);

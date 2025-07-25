@@ -240,6 +240,18 @@ public class MatchController {
         List<MatchDTO> result = matchMapper.toDTO(matchService.findBySport(sport));
         return ResponseEntity.ok(result);
     }
+
+    /**
+     * Returns the total number of match records.
+     * Example: GET /api/matches/count
+     *
+     * @return ResponseEntity containing the total count of matches.
+     */
+    @GetMapping("/count")
+    public ResponseEntity<Long> getCount(){
+        long result = matchService.getRecordsCount();
+        return ResponseEntity.ok(result);
+    }
     // </editor-fold>
 
     // <editor-fold desc="POST endpoints">
@@ -271,6 +283,34 @@ public class MatchController {
         Match match = matchMapper.toEntity(matchDTO);
         Match savedMatch = matchService.save(match);
         return ResponseEntity.ok(matchMapper.toDTO(savedMatch));
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="DELETE endpoints">
+    /**
+     * Deletes a match by its ID.
+     * Example: DELETE /api/matches/1
+     *
+     * @param id The ID of the match to delete.
+     * @return Empty ResponseEntity indicating successful deletion.
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteById(@PathVariable Long id){
+        matchService.deleteById(id);
+        return ResponseEntity.ok().build();
+    }
+
+    /**
+     * Deletes multiple matches by their IDs.
+     * Example: DELETE /api/matches/deleteByIds?ids=1&ids=2&ids=3
+     *
+     * @param ids The list of match IDs to delete.
+     * @return Empty ResponseEntity with HTTP 200 status.
+     */
+    @DeleteMapping("/deleteByIds")
+    public ResponseEntity<Void> deleteByIds(@RequestParam List<Long> ids){
+        matchService.deleteByIds(ids);
+        return ResponseEntity.ok().build();
     }
     // </editor-fold>
 }

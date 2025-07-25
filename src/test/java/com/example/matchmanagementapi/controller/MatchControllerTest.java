@@ -20,6 +20,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -55,8 +56,8 @@ public class MatchControllerTest {
 
         List<Long> ids = List.of(1L, 2L, 3L);
 
-        Mockito.when(matchService.findAll(ids)).thenReturn(List.of());
-        Mockito.when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
+        when(matchService.findAll(ids)).thenReturn(List.of());
+        when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
 
         // Act & Assert
         mockMvc.perform(get("/api/matches/byIdsList")
@@ -79,8 +80,8 @@ public class MatchControllerTest {
         matchDTO.setTeamA("OSFP");
         matchDTO.setTeamB("PAO");
 
-        Mockito.when(matchService.findAll()).thenReturn(List.of());
-        Mockito.when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
+        when(matchService.findAll()).thenReturn(List.of());
+        when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
 
         // Act & Assert
         mockMvc.perform(get("/api/matches")
@@ -102,8 +103,8 @@ public class MatchControllerTest {
         matchDTO.setTeamB("PAO");
 
         Match match = new Match("OSFP-PAO", LocalDate.of(2025, 8, 1), LocalTime.of(20, 0), "OSFP", "PAO", Sport.Football);
-        Mockito.when(matchService.find(matchId)).thenReturn(match);
-        Mockito.when(matchMapper.toDTO(match)).thenReturn(matchDTO);
+        when(matchService.find(matchId)).thenReturn(match);
+        when(matchMapper.toDTO(match)).thenReturn(matchDTO);
 
         // Act & Assert
         mockMvc.perform(get("/api/matches/{id}", matchId)
@@ -125,8 +126,8 @@ public class MatchControllerTest {
         dto.setTeamA("OSFP");
         dto.setTeamB("PAO");
 
-        Mockito.when(matchService.findByDescription(description)).thenReturn(List.of());
-        Mockito.when(matchMapper.toDTO(List.of())).thenReturn(List.of(dto));
+        when(matchService.findByDescription(description)).thenReturn(List.of());
+        when(matchMapper.toDTO(List.of())).thenReturn(List.of(dto));
 
         mockMvc.perform(get("/api/matches/searchByDescription")
                         .param("description", description)
@@ -146,8 +147,8 @@ public class MatchControllerTest {
         matchDTO.setTeamA("OSFP");
         matchDTO.setTeamB("PAO");
 
-        Mockito.when(matchService.findByMatchDate(LocalDate.of(2025, 8, 1))).thenReturn(List.of());
-        Mockito.when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
+        when(matchService.findByMatchDate(LocalDate.of(2025, 8, 1))).thenReturn(List.of());
+        when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
 
         // Act & Assert
         mockMvc.perform(get("/api/matches/searchByMatchDate")
@@ -171,8 +172,8 @@ public class MatchControllerTest {
         matchDTO.setTeamA("OSFP");
         matchDTO.setTeamB("PAO");
 
-        Mockito.when(matchService.findByMatchDateBetween(startDate, endDate)).thenReturn(List.of());
-        Mockito.when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
+        when(matchService.findByMatchDateBetween(startDate, endDate)).thenReturn(List.of());
+        when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
 
         // Act & Assert
         mockMvc.perform(get("/api/matches/searchByDateRange")
@@ -196,8 +197,8 @@ public class MatchControllerTest {
         matchDTO.setTeamA("OSFP");
         matchDTO.setTeamB("PAO");
 
-        Mockito.when(matchService.findByMatchDateBefore(matchDate)).thenReturn(List.of());
-        Mockito.when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
+        when(matchService.findByMatchDateBefore(matchDate)).thenReturn(List.of());
+        when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
 
         // Act & Assert
         mockMvc.perform(get("/api/matches/searchByDateBefore")
@@ -220,8 +221,8 @@ public class MatchControllerTest {
         matchDTO.setTeamA("OSFP");
         matchDTO.setTeamB("PAO");
 
-        Mockito.when(matchService.findByMatchDateAfter(matchDate)).thenReturn(List.of());
-        Mockito.when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
+        when(matchService.findByMatchDateAfter(matchDate)).thenReturn(List.of());
+        when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
 
         // Act & Assert
         mockMvc.perform(get("/api/matches/searchByDateAfter")
@@ -244,8 +245,8 @@ public class MatchControllerTest {
         matchDTO.setTeamA("OSFP");
         matchDTO.setTeamB("PAO");
 
-        Mockito.when(matchService.findByMatchTime(matchTime)).thenReturn(List.of());
-        Mockito.when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
+        when(matchService.findByMatchTime(matchTime)).thenReturn(List.of());
+        when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
 
         // Act & Assert
         mockMvc.perform(get("/api/matches/searchByMatchTime")
@@ -268,8 +269,8 @@ public class MatchControllerTest {
         matchDTO.setTeamA("OSFP");
         matchDTO.setTeamB("PAO");
 
-        Mockito.when(matchService.findByMatchTimeBefore(matchTime)).thenReturn(List.of());
-        Mockito.when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
+        when(matchService.findByMatchTimeBefore(matchTime)).thenReturn(List.of());
+        when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
 
         // Act & Assert
         mockMvc.perform(get("/api/matches/searchByTimeBefore")
@@ -292,8 +293,8 @@ public class MatchControllerTest {
         matchDTO.setTeamA("OSFP");
         matchDTO.setTeamB("PAO");
 
-        Mockito.when(matchService.findByMatchTimeAfter(matchTime)).thenReturn(List.of());
-        Mockito.when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
+        when(matchService.findByMatchTimeAfter(matchTime)).thenReturn(List.of());
+        when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
 
         // Act & Assert
         mockMvc.perform(get("/api/matches/searchByTimeAfter")
@@ -316,8 +317,8 @@ public class MatchControllerTest {
         matchDTO.setTeamA(teamA);
         matchDTO.setTeamB("PAO");
 
-        Mockito.when(matchService.findByTeamA(teamA)).thenReturn(List.of());
-        Mockito.when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
+        when(matchService.findByTeamA(teamA)).thenReturn(List.of());
+        when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
 
         // Act & Assert
         mockMvc.perform(get("/api/matches/searchByFirstTeam")
@@ -340,8 +341,8 @@ public class MatchControllerTest {
         matchDTO.setTeamA("OSFP");
         matchDTO.setTeamB(teamB);
 
-        Mockito.when(matchService.findByTeamB(teamB)).thenReturn(List.of());
-        Mockito.when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
+        when(matchService.findByTeamB(teamB)).thenReturn(List.of());
+        when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
 
         // Act & Assert
         mockMvc.perform(get("/api/matches/searchBySecondTeam")
@@ -365,8 +366,8 @@ public class MatchControllerTest {
         matchDTO.setTeamA(teamA);
         matchDTO.setTeamB(teamB);
 
-        Mockito.when(matchService.findByTeamAAndTeamB(teamA, teamB)).thenReturn(List.of());
-        Mockito.when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
+        when(matchService.findByTeamAAndTeamB(teamA, teamB)).thenReturn(List.of());
+        when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
 
         // Act & Assert
         mockMvc.perform(get("/api/matches/searchByTeams")
@@ -390,8 +391,8 @@ public class MatchControllerTest {
         matchDTO.setTeamA("OSFP");
         matchDTO.setTeamB("PAO");
 
-        Mockito.when(matchService.findBySport(sport)).thenReturn(List.of());
-        Mockito.when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
+        when(matchService.findBySport(sport)).thenReturn(List.of());
+        when(matchMapper.toDTO(List.of())).thenReturn(List.of(matchDTO));
 
         // Act & Assert
         mockMvc.perform(get("/api/matches/searchBySport")
@@ -399,6 +400,15 @@ public class MatchControllerTest {
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].description").value("OSFP-PAO"));
+    }
+
+    @Test
+    void testGetCount() throws Exception {
+        Mockito.when(matchService.getRecordsCount()).thenReturn(5L);
+
+        mockMvc.perform(get("/api/matches/count"))
+                .andExpect(status().isOk())
+                .andExpect(content().string("5"));
     }
     // </editor-fold>
 
@@ -417,9 +427,9 @@ public class MatchControllerTest {
 
         Match matchEntity = new Match("OSFP-PAO", matchDTO.getMatchDate(), matchDTO.getMatchTime(), "OSFP", "PAO", Sport.Football);
 
-        Mockito.when(matchMapper.toEntity(List.of(matchDTO))).thenReturn(List.of(matchEntity));
-        Mockito.when(matchService.saveAll(List.of(matchEntity))).thenReturn(List.of(matchEntity));
-        Mockito.when(matchMapper.toDTO(List.of(matchEntity))).thenReturn(List.of(matchDTO));
+        when(matchMapper.toEntity(List.of(matchDTO))).thenReturn(List.of(matchEntity));
+        when(matchService.saveAll(List.of(matchEntity))).thenReturn(List.of(matchEntity));
+        when(matchMapper.toDTO(List.of(matchEntity))).thenReturn(List.of(matchDTO));
 
         // Act & Assert
         mockMvc.perform(
@@ -457,9 +467,9 @@ public class MatchControllerTest {
 
         Match matchEntity = new Match("OSFP-PAO", matchDTO.getMatchDate(), matchDTO.getMatchTime(), "OSFP", "PAO", Sport.Football);
 
-        Mockito.when(matchMapper.toEntity(matchDTO)).thenReturn(matchEntity);
-        Mockito.when(matchService.save(matchEntity)).thenReturn(matchEntity);
-        Mockito.when(matchMapper.toDTO(matchEntity)).thenReturn(matchDTO);
+        when(matchMapper.toEntity(matchDTO)).thenReturn(matchEntity);
+        when(matchService.save(matchEntity)).thenReturn(matchEntity);
+        when(matchMapper.toDTO(matchEntity)).thenReturn(matchDTO);
 
         // Act & Assert
         mockMvc.perform(post("/api/matches")
@@ -480,5 +490,26 @@ public class MatchControllerTest {
                 .andExpect(jsonPath("$.description").value("OSFP-PAO"));
     }
 
+    // </editor-fold>
+
+    // <editor-fold desc="DELETE endpoints">
+    @Test
+    void deleteById_shouldReturnOk() throws Exception {
+        mockMvc.perform(delete("/api/matches/1"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void testDeleteByIds() throws Exception {
+        List<Long> ids = List.of(1L, 2L, 3L);
+
+        Mockito.doNothing().when(matchService).deleteByIds(ids);
+
+        mockMvc.perform(delete("/api/matches/deleteByIds")
+                        .param("ids", "1")
+                        .param("ids", "2")
+                        .param("ids", "3"))
+                .andExpect(status().isOk());
+    }
     // </editor-fold>
 }

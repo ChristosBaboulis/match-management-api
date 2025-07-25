@@ -160,16 +160,6 @@ public class MatchServiceTest extends Initializer {
     }
 
     @Test
-    void testDelete(){
-        Match savedMatch = matchService.save(match);
-        Assertions.assertNotNull(savedMatch);
-
-        matchService.delete(savedMatch);
-        List<Match> matchList = matchService.findAll();
-        Assertions.assertEquals(0, matchList.size());
-    }
-
-    @Test
     void testDeleteById(){
         Match savedMatch = matchService.save(match);
         Assertions.assertNotNull(savedMatch);
