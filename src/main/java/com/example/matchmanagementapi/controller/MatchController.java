@@ -7,6 +7,7 @@ import com.example.matchmanagementapi.dto.MatchMapper;
 import com.example.matchmanagementapi.service.MatchService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -19,16 +20,11 @@ import java.util.Map;
 
 @RestController
 @RequestMapping("/api/matches")
+@RequiredArgsConstructor
 public class MatchController {
     private final MatchService matchService;
     private final MatchMapper matchMapper;
     private final ObjectMapper objectMapper;
-
-    public MatchController(MatchService matchService, MatchMapper matchMapper, ObjectMapper objectMapper) {
-        this.matchService = matchService;
-        this.matchMapper = matchMapper;
-        this.objectMapper = objectMapper;
-    }
 
     // <editor-fold desc="GET endpoints">
     /**
