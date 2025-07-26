@@ -226,7 +226,6 @@ public class MatchController {
     }
     // </editor-fold>
 
-
     // <editor-fold desc="PATCH endpoints">
     /**
      * Partially updates a match by its ID.

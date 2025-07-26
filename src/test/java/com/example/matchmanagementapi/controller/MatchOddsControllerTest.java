@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,7 +25,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
+import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
@@ -283,5 +286,129 @@ public class MatchOddsControllerTest {
                 .andExpect(jsonPath("$[1].match.id").value(1));
     }
 
+    // </editor-fold>
+
+    // <editor-fold desc="DELETE endpoints">
+    @Test
+    void deleteById_shouldReturnOk() throws Exception {
+        mockMvc.perform(delete("/api/matchOdds/1"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void testDeleteByIds() throws Exception {
+        List<Long> ids = List.of(1L, 2L, 3L);
+
+        Mockito.doNothing().when(matchOddsService).deleteByIds(ids);
+
+        mockMvc.perform(delete("/api/matchOdds")
+                        .contentType("application/json")
+                        .content("[1,2,3]"))
+                .andExpect(status().isOk());
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="PUT endpoints">
+    @Test
+    void testUpdateMatchOdds() throws Exception {
+        // Arrange
+        Long matchOddsId = 1L;
+        Long matchId = 5L;
+
+        MatchOddsDTO matchOddsDTO = new MatchOddsDTO();
+        matchOddsDTO.setId(matchOddsId);
+        matchOddsDTO.setSpecifier("1");
+        matchOddsDTO.setOdd(2.5);
+
+        MatchDTO matchDTO = new MatchDTO();
+        matchDTO.setId(matchId);
+        matchOddsDTO.setMatch(matchDTO);
+
+        MatchOddsDTO savedMatchOddsDTO = new MatchOddsDTO();
+        savedMatchOddsDTO.setId(matchOddsId);
+        savedMatchOddsDTO.setSpecifier("1");
+        savedMatchOddsDTO.setOdd(2.5);
+        savedMatchOddsDTO.setMatch(matchDTO);
+
+        MatchOdds matchOddsEntity = new MatchOdds();
+        matchOddsEntity.setSpecifier("1");
+        matchOddsEntity.setOdd(2.5);
+        matchOddsEntity.setMatch(new Match());
+
+        when(matchOddsMapper.toEntity(matchOddsDTO)).thenReturn(matchOddsEntity);
+        when(matchOddsService.update(matchOddsEntity)).thenReturn(matchOddsEntity);
+        when(matchOddsMapper.toDTO(matchOddsEntity)).thenReturn(savedMatchOddsDTO);
+
+        // Act & Assert
+        mockMvc.perform(put("/api/matchOdds/{id}", matchOddsId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                    {
+                      "specifier": "1",
+                      "odd": 2.5,
+                      "match": {
+                        "id": 5
+                      }
+                    }
+                    """)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.specifier").value("1"))
+                .andExpect(jsonPath("$.odd").value(2.5))
+                .andExpect(jsonPath("$.match.id").value(5));
+    }
+
+    @Test
+    void testUpdateMatchOddsBatch() throws Exception {
+        // Arrange
+        Long matchId = 5L;
+
+        MatchDTO matchDTO = new MatchDTO();
+        matchDTO.setId(matchId);
+
+        MatchOddsDTO matchOddsDTO = new MatchOddsDTO();
+        matchOddsDTO.setId(1L);
+        matchOddsDTO.setSpecifier("1");
+        matchOddsDTO.setOdd(2.5);
+        matchOddsDTO.setMatch(matchDTO);
+
+        List<MatchOddsDTO> matchOddsDTOList = List.of(matchOddsDTO);
+
+        Match matchEntity = new Match();
+        when(matchService.find(matchId)).thenReturn(matchEntity);
+
+        MatchOdds matchOddsEntity = new MatchOdds();
+        matchOddsEntity.setSpecifier("1");
+        matchOddsEntity.setOdd(2.5);
+        matchOddsEntity.setMatch(matchEntity);
+
+        List<MatchOdds> matchOddsEntityList = List.of(matchOddsEntity);
+
+        when(matchService.find(matchId)).thenReturn(matchEntity);
+        doReturn(matchOddsEntityList).when(matchOddsMapper).toEntity(anyList());
+        when(matchOddsService.update(matchOddsEntityList)).thenReturn(matchOddsEntityList);
+        when(matchOddsMapper.toDTO(matchOddsEntityList)).thenReturn(matchOddsDTOList);
+
+        // Act & Assert
+        mockMvc.perform(put("/api/matchOdds/batch")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                    [
+                      {
+                        "id": 1,
+                        "specifier": "1",
+                        "odd": 2.5,
+                        "match": {
+                          "id": 5
+                        }
+                      }
+                    ]
+                    """)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].specifier").value("1"))
+                .andExpect(jsonPath("$[0].odd").value(2.5))
+                .andExpect(jsonPath("$[0].match.id").value(5));
+    }
     // </editor-fold>
 }
