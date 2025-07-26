@@ -1,13 +1,22 @@
 package com.example.matchmanagementapi.controller;
 
+import com.example.matchmanagementapi.domain.Match;
+import com.example.matchmanagementapi.domain.MatchOdds;
 import com.example.matchmanagementapi.dto.MatchOddsDTO;
 import com.example.matchmanagementapi.dto.MatchOddsMapper;
+import com.example.matchmanagementapi.repository.MatchOddsRepository;
+import com.example.matchmanagementapi.repository.MatchRepository;
 import com.example.matchmanagementapi.service.MatchOddsService;
+import com.example.matchmanagementapi.service.MatchService;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @RestController
@@ -17,6 +26,7 @@ public class MatchOddsController {
     private final MatchOddsService matchOddsService;
     private final MatchOddsMapper matchOddsMapper;
     private final ObjectMapper objectMapper;
+    private final MatchService matchService;
 
     // <editor-fold desc="GET endpoints">
     /**
@@ -84,5 +94,65 @@ public class MatchOddsController {
         long result = matchOddsService.getRecordsCount();
         return ResponseEntity.ok(result);
     }
+    // </editor-fold>
+
+    // <editor-fold desc="POST endpoints">
+    /**
+     * Saves one or more matchOdds records to the database.
+     * Example:
+     * - Single insert: POST /api/matchOdds
+     *   Request Body:
+     *   {
+     *     "specifier": "1",
+     *     "odd": 2.5,
+     *     "match": {
+     *       "id": 5
+     *     }
+     *   }
+     * - Batch insert: POST /api/matchOdds
+     *   Request Body:
+     *   [
+     *     {
+     *       "specifier": "1",
+     *       "odd": 2.5,
+     *       "match": {
+     *         "id": 5
+     *       }
+     *     },
+     *     {
+     *       "specifier": "X",
+     *       "odd": 3.0,
+     *       "match": {
+     *         "id": 5
+     *       }
+     *     }
+     *   ]
+     *
+     * @param body The request body containing a single MatchOddsDTO or a list of MatchOddsDTOs.
+     * @return ResponseEntity containing the saved MatchOddsDTO or list of MatchOddsDTOs.
+     */
+    @PostMapping
+    public ResponseEntity<?> saveMatchOdds(@RequestBody Object body) {
+        if (body instanceof List<?> list && !list.isEmpty() && list.getFirst() instanceof LinkedHashMap) {
+            // Batch insert
+            List<MatchOddsDTO> matchOddsDTOs = objectMapper.convertValue(body, new TypeReference<>() {});
+            List<MatchOdds> matchOddsEntities = matchOddsDTOs.stream().map(dto -> {
+                Long matchId = dto.getMatch().getId();
+                Match match = matchService.find(matchId);
+                return new MatchOdds(match, dto.getSpecifier(), dto.getOdd());
+            }).toList();
+            List<MatchOdds> saved = matchOddsService.saveAll(matchOddsEntities);
+            return ResponseEntity.ok(matchOddsMapper.toDTO(saved));
+        } else {
+            // Single insert
+            MatchOddsDTO matchOddsDTO = objectMapper.convertValue(body, MatchOddsDTO.class);
+            Long matchId = matchOddsDTO.getMatch().getId();
+            Match match = matchService.find(matchId);
+            MatchOdds matchOdds = matchOddsMapper.toEntity(matchOddsDTO);
+            MatchOdds saved = matchOddsService.save(matchOdds);
+            return ResponseEntity.ok(matchOddsMapper.toDTO(saved));
+        }
+    }
+
     // </editor-fold>
 }

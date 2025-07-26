@@ -7,6 +7,7 @@ import com.example.matchmanagementapi.dto.MatchDTO;
 import com.example.matchmanagementapi.dto.MatchOddsDTO;
 import com.example.matchmanagementapi.dto.MatchOddsMapper;
 import com.example.matchmanagementapi.service.MatchOddsService;
+import com.example.matchmanagementapi.service.MatchService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
@@ -38,6 +39,9 @@ public class MatchOddsControllerTest {
     private MatchOddsService matchOddsService;
 
     @Mock
+    private MatchService matchService;
+
+    @Mock
     private MatchOddsMapper matchOddsMapper;
 
     private MockMvc mockMvc;
@@ -46,7 +50,7 @@ public class MatchOddsControllerTest {
     void setup() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.registerModule(new JavaTimeModule());
-        matchOddsController = new MatchOddsController(matchOddsService, matchOddsMapper, objectMapper);
+        matchOddsController = new MatchOddsController(matchOddsService, matchOddsMapper, objectMapper, matchService);
         mockMvc = MockMvcBuilders.standaloneSetup(matchOddsController).build();
     }
 
@@ -164,6 +168,119 @@ public class MatchOddsControllerTest {
         mockMvc.perform(get("/api/matchOdds/count"))
                 .andExpect(status().isOk())
                 .andExpect(content().string("7"));
+    }
+
+    // </editor-fold>
+
+    // <editor-fold desc="POST endpoints">
+    @Test
+    void testSaveMatchOdds() throws Exception {
+        // Arrange
+        MatchDTO matchDTO = new MatchDTO();
+        matchDTO.setDescription("OSFP-PAO");
+        matchDTO.setMatchDate(LocalDate.of(2025, 8, 1));
+        matchDTO.setMatchTime(LocalTime.of(20, 0));
+        matchDTO.setTeamA("OSFP");
+        matchDTO.setTeamB("PAO");
+        matchDTO.setSport(Sport.Football);
+
+        Match matchEntity = new Match("OSFP-PAO", matchDTO.getMatchDate(), matchDTO.getMatchTime(), "OSFP", "PAO", Sport.Football);
+
+        MatchOddsDTO oddsDTO = new MatchOddsDTO();
+        oddsDTO.setMatch(matchDTO);
+        oddsDTO.setSpecifier("1");
+        oddsDTO.setOdd(2.5);
+
+        MatchOdds oddsEntity = new MatchOdds(matchEntity, "1", 2.5);
+
+        when(matchOddsMapper.toEntity(oddsDTO)).thenReturn(oddsEntity);
+        when(matchOddsService.save(oddsEntity)).thenReturn(oddsEntity);
+        when(matchOddsMapper.toDTO(oddsEntity)).thenReturn(oddsDTO);
+
+        // Act & Assert
+        mockMvc.perform(post("/api/matchOdds")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                        {
+                          "match": {
+                            "description": "OSFP-PAO",
+                            "matchDate": "2025-08-01",
+                            "matchTime": "20:00:00",
+                            "teamA": "OSFP",
+                            "teamB": "PAO",
+                            "sport": "Football"
+                          },
+                          "specifier": "1",
+                          "odd": 2.5
+                        }
+                    """)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.specifier").value("1"))
+                .andExpect(jsonPath("$.odd").value(2.5));
+    }
+
+    @Test
+    void testSaveMatchOddsBatch() throws Exception {
+        // Arrange
+        MatchDTO matchDTO = new MatchDTO();
+        matchDTO.setId(1L);
+        matchDTO.setDescription("OSFP-PAO");
+        matchDTO.setMatchDate(LocalDate.of(2025, 8, 1));
+        matchDTO.setMatchTime(LocalTime.of(20, 0));
+        matchDTO.setTeamA("OSFP");
+        matchDTO.setTeamB("PAO");
+        matchDTO.setSport(Sport.Football);
+
+        Match matchEntity = new Match("OSFP-PAO", matchDTO.getMatchDate(), matchDTO.getMatchTime(), "OSFP", "PAO", Sport.Football);
+        when(matchService.find(1L)).thenReturn(matchEntity);
+
+        MatchOddsDTO dto1 = new MatchOddsDTO();
+        dto1.setMatch(matchDTO);
+        dto1.setSpecifier("1");
+        dto1.setOdd(2.5);
+
+        MatchOddsDTO dto2 = new MatchOddsDTO();
+        dto2.setMatch(matchDTO);
+        dto2.setSpecifier("X");
+        dto2.setOdd(3.1);
+
+        MatchOdds entity1 = new MatchOdds(matchEntity, "1", 2.5);
+        MatchOdds entity2 = new MatchOdds(matchEntity, "X", 3.1);
+
+        List<MatchOddsDTO> dtoList = List.of(dto1, dto2);
+        List<MatchOdds> entityList = List.of(entity1, entity2);
+
+        when(matchOddsService.saveAll(entityList)).thenReturn(entityList);
+        when(matchOddsMapper.toDTO(entityList)).thenReturn(dtoList);
+
+        // Act & Assert
+        mockMvc.perform(post("/api/matchOdds")
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                        [
+                          {
+                            "specifier": "1",
+                            "odd": 2.5,
+                            "match": {
+                              "id": 1
+                            }
+                          },
+                          {
+                            "specifier": "X",
+                            "odd": 3.1,
+                            "match": {
+                              "id": 1
+                            }
+                          }
+                        ]
+                    """)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].specifier").value("1"))
+                .andExpect(jsonPath("$[1].specifier").value("X"))
+                .andExpect(jsonPath("$[0].match.id").value(1))
+                .andExpect(jsonPath("$[1].match.id").value(1));
     }
 
     // </editor-fold>
