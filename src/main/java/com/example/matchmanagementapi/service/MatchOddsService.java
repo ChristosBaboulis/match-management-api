@@ -1,5 +1,6 @@
 package com.example.matchmanagementapi.service;
 
+import com.example.matchmanagementapi.domain.Match;
 import com.example.matchmanagementapi.domain.MatchOdds;
 import com.example.matchmanagementapi.repository.MatchOddsRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -8,11 +9,14 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class MatchOddsService {
     private final MatchOddsRepository matchOddsRepository;
+    private final MatchService matchService;
 
     // <editor-fold desc="FIND Methods">
     public List<MatchOdds> findAll() {
@@ -94,6 +98,51 @@ public class MatchOddsService {
 
     public List<MatchOdds> update(List<MatchOdds> matchOddsList){
         return matchOddsRepository.saveAll(matchOddsList);
+    }
+
+    public MatchOdds partialUpdate(Long id, Map<String, Object> updates) {
+        MatchOdds matchOdds = find(id);
+
+        Set<String> allowedFields = Set.of(
+                "specifier",
+                "odd",
+                "match"
+        );
+
+        for (String key : updates.keySet()) {
+            if (!allowedFields.contains(key)) {
+                throw new IllegalArgumentException("Field '" + key + "' is not allowed to be updated.");
+            }
+        }
+
+        updates.forEach((key, value) -> {
+            switch (key) {
+                case "specifier" -> matchOdds.setSpecifier((String) value);
+                case "odd" -> {
+                    if (value instanceof Number number) {
+                        matchOdds.setOdd(number.doubleValue());
+                    } else {
+                        matchOdds.setOdd(Double.parseDouble(value.toString()));
+                    }
+                }
+                case "match" -> {
+                    if (value instanceof Map<?, ?> matchMap) {
+                        Object matchIdObj = matchMap.get("id");
+                        if (matchIdObj instanceof Number matchIdNumber) {
+                            Long matchId = matchIdNumber.longValue();
+                            Match match = matchService.find(matchId);
+                            matchOdds.setMatch(match);
+                        } else {
+                            throw new IllegalArgumentException("Invalid or missing match.id");
+                        }
+                    } else {
+                        throw new IllegalArgumentException("Invalid format for match");
+                    }
+                }
+            }
+        });
+
+        return matchOddsRepository.save(matchOdds);
     }
     // </editor-fold>
 }

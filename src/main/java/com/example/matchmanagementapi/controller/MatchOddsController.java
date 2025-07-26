@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/matchOdds")
@@ -144,7 +145,7 @@ public class MatchOddsController {
             // Single insert
             MatchOddsDTO matchOddsDTO = objectMapper.convertValue(body, MatchOddsDTO.class);
             Long matchId = matchOddsDTO.getMatch().getId();
-            Match match = matchService.find(matchId);
+            matchService.find(matchId);
             MatchOdds matchOdds = matchOddsMapper.toEntity(matchOddsDTO);
             MatchOdds saved = matchOddsService.save(matchOdds);
             return ResponseEntity.ok(matchOddsMapper.toDTO(saved));
@@ -203,7 +204,7 @@ public class MatchOddsController {
         matchOddsDTO.setId(id);
 
         Long matchId = matchOddsDTO.getMatch().getId();
-        Match match = matchService.find(matchId);
+        matchService.find(matchId);
 
         MatchOdds matchOdds = matchOddsMapper.toEntity(matchOddsDTO);
         MatchOdds updatedMatchOdds = matchOddsService.update(matchOdds);
@@ -236,6 +237,34 @@ public class MatchOddsController {
 
         List<MatchOdds> matchOdds = matchOddsMapper.toEntity(matchOddsDTOs);
         List<MatchOdds> updatedMatchOdds = matchOddsService.update(matchOdds);
+        return ResponseEntity.ok(matchOddsMapper.toDTO(updatedMatchOdds));
+    }
+    // </editor-fold>
+
+    // <editor-fold desc="PATCH endpoints">
+    /**
+     * Partially updates a MatchOdds by its ID.
+     * Example: PATCH /api/matchOdds/1 with body {"odd": 2.9}
+     * Request Body: Map of fields to update (e.g., specifier, odd, match.id).
+     *
+     * @param id The ID of the MatchOdds to update.
+     * @param updates Fields and values to be updated.
+     * @return The updated MatchOddsDTO.
+     */
+    @PatchMapping("/{id}")
+    public ResponseEntity<MatchOddsDTO> patchMatchOdds(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
+        if (updates.containsKey("match")) {
+            Object matchObj = updates.get("match");
+            if (matchObj instanceof Map<?, ?> matchMap) {
+                Object matchIdObj = matchMap.get("id");
+                if (matchIdObj instanceof Number matchIdNumber) {
+                    Long matchId = matchIdNumber.longValue();
+                    matchService.find(matchId);
+                }
+            }
+        }
+
+        MatchOdds updatedMatchOdds = matchOddsService.partialUpdate(id, updates);
         return ResponseEntity.ok(matchOddsMapper.toDTO(updatedMatchOdds));
     }
     // </editor-fold>

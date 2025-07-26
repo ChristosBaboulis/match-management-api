@@ -25,8 +25,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 
-import static org.mockito.ArgumentMatchers.anyList;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.when;
 
@@ -411,4 +410,44 @@ public class MatchOddsControllerTest {
                 .andExpect(jsonPath("$[0].match.id").value(5));
     }
     // </editor-fold>
+
+    // <editor-fold desc="PUT endpoints">
+    @Test
+    void testPatchMatchOdds() throws Exception {
+        // Arrange
+        Long matchOddsId = 1L;
+        Long matchId = 5L;
+
+        Match matchEntity = new Match();
+        MatchOdds patchedEntity = new MatchOdds();
+        patchedEntity.setSpecifier("X");
+        patchedEntity.setOdd(3.4);
+        patchedEntity.setMatch(matchEntity);
+
+        MatchDTO matchDTO = new MatchDTO();
+        MatchOddsDTO patchedDTO = new MatchOddsDTO();
+        patchedDTO.setSpecifier("X");
+        patchedDTO.setOdd(3.4);
+        patchedDTO.setMatch(matchDTO);
+
+        when(matchService.find(matchId)).thenReturn(matchEntity);
+        when(matchOddsService.partialUpdate(eq(matchOddsId), anyMap())).thenReturn(patchedEntity);
+        when(matchOddsMapper.toDTO(patchedEntity)).thenReturn(patchedDTO);
+
+        // Act & Assert
+        mockMvc.perform(patch("/api/matchOdds/{id}", matchOddsId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content("""
+                {
+                  "specifier": "X",
+                  "odd": 3.4,
+                  "match": { "id": 5 }
+                }
+            """)
+                        .accept(MediaType.APPLICATION_JSON))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.specifier").value("X"))
+                .andExpect(jsonPath("$.odd").value(3.4));
+    }
+    // </editor-fold">
 }
