@@ -131,6 +131,13 @@
             <scope>test</scope> <!-- Only used during test phase -->
         </dependency>
 
+        <!-- Hibernate Validator: default implementation of Jakarta Bean Validation API
+             Enables support for @Valid and other validation annotations in Spring Web MVC -->
+        <dependency>
+            <groupId>org.hibernate.validator</groupId>
+            <artifactId>hibernate-validator</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>

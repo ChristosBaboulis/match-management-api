@@ -2,7 +2,6 @@ package com.example.matchmanagementapi.service;
 
 import com.example.matchmanagementapi.Initializer;
 import com.example.matchmanagementapi.domain.MatchOdds;
-import com.example.matchmanagementapi.repository.MatchRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,180 +34,6 @@ public class MatchOddsServiceTest extends Initializer {
     }
 
     @Test
-    void testFindByMatch(){
-        matchService.save(match);
-        MatchOdds savedMatchOdds = matchOddsService.save(matchOdds);
-        Assertions.assertNotNull(savedMatchOdds);
-
-        List<MatchOdds> matchOddsList = matchOddsService.findByMatch(savedMatchOdds.getMatch());
-        Assertions.assertEquals(1, matchOddsList.size());
-        Assertions.assertEquals(savedMatchOdds.getMatch().getId(), matchOddsList.getFirst().getMatch().getId());
-    }
-
-    @Test
-    void testFindByMatchId(){
-        matchService.save(match);
-        MatchOdds savedMatchOdds = matchOddsService.save(matchOdds);
-        Assertions.assertNotNull(savedMatchOdds);
-
-        List<MatchOdds> matchOddsList = matchOddsService.findByMatchId(savedMatchOdds.getMatch().getId());
-        Assertions.assertEquals(1, matchOddsList.size());
-        Assertions.assertEquals(savedMatchOdds.getMatch().getId(), matchOddsList.getFirst().getMatch().getId());
-    }
-
-    @Test
-    void testFindByMatchAndOdd(){
-        matchService.save(match);
-        MatchOdds savedMatchOdds = matchOddsService.save(matchOdds);
-        Assertions.assertNotNull(savedMatchOdds);
-
-        List<MatchOdds> matchOddsList = matchOddsService.findByMatchAndOdd(savedMatchOdds.getMatch(),  1.5);
-        Assertions.assertEquals(1, matchOddsList.size());
-        Assertions.assertEquals(savedMatchOdds.getMatch().getId(), matchOddsList.getFirst().getMatch().getId());
-        Assertions.assertEquals(1.5, matchOddsList.getFirst().getOdd());
-    }
-
-    @Test
-    void testFindByOdd(){
-        matchService.save(match);
-        MatchOdds savedMatchOdds = matchOddsService.save(matchOdds);
-        Assertions.assertNotNull(savedMatchOdds);
-
-        List<MatchOdds> matchOddsList = matchOddsService.findByOdd(1.5);
-        Assertions.assertEquals(1, matchOddsList.size());
-        Assertions.assertEquals(1.5, matchOddsList.getFirst().getOdd());
-    }
-
-    @Test
-    void testFindByOddGreaterThan(){
-        matchService.save(match);
-        MatchOdds savedMatchOdds = matchOddsService.save(matchOdds);
-        Assertions.assertNotNull(savedMatchOdds);
-
-        List<MatchOdds> matchOddsList = matchOddsService.findByOddGreaterThan(1.4);
-        Assertions.assertEquals(1, matchOddsList.size());
-        Assertions.assertEquals(1.5, matchOddsList.getFirst().getOdd());
-    }
-
-    @Test
-    void testFindByOddGreaterThanEqual(){
-        matchService.save(match);
-        MatchOdds savedMatchOdds = matchOddsService.save(matchOdds);
-        Assertions.assertNotNull(savedMatchOdds);
-
-        List<MatchOdds> matchOddsList = matchOddsService.findByOddGreaterThanEqual(1.5);
-        Assertions.assertEquals(1, matchOddsList.size());
-        Assertions.assertEquals(1.5, matchOddsList.getFirst().getOdd());
-    }
-
-    @Test
-    void testFindByOddLessThan(){
-        matchService.save(match);
-        MatchOdds savedMatchOdds = matchOddsService.save(matchOdds);
-        Assertions.assertNotNull(savedMatchOdds);
-
-        List<MatchOdds> matchOddsList = matchOddsService.findByOddLessThan(1.6);
-        Assertions.assertEquals(1, matchOddsList.size());
-        Assertions.assertEquals(1.5, matchOddsList.getFirst().getOdd());
-    }
-
-    @Test
-    void testFindByOddLessThanEqual(){
-        matchService.save(match);
-        MatchOdds savedMatchOdds = matchOddsService.save(matchOdds);
-        Assertions.assertNotNull(savedMatchOdds);
-
-        List<MatchOdds> matchOddsList = matchOddsService.findByOddLessThanEqual(1.5);
-        Assertions.assertEquals(1, matchOddsList.size());
-        Assertions.assertEquals(1.5, matchOddsList.getFirst().getOdd());
-    }
-
-    @Test
-    void testFindByOddBetween(){
-        matchService.save(match);
-        MatchOdds savedMatchOdds = matchOddsService.save(matchOdds);
-        Assertions.assertNotNull(savedMatchOdds);
-
-        List<MatchOdds> matchOddsList = matchOddsService.findByOddBetween(1.4, 1.6);
-        Assertions.assertEquals(1, matchOddsList.size());
-        Assertions.assertEquals(1.5, matchOddsList.getFirst().getOdd());
-
-        Assertions.assertThrows(IllegalArgumentException.class,
-                () -> matchOddsService.findByOddBetween(1.6, 1.4));
-    }
-
-    @Test
-    void testFindBySpecifier(){
-        matchService.save(match);
-        MatchOdds savedMatchOdds = matchOddsService.save(matchOdds);
-        Assertions.assertNotNull(savedMatchOdds);
-
-        List<MatchOdds> matchOddsList = matchOddsService.findBySpecifier("X");
-        Assertions.assertEquals(1, matchOddsList.size());
-        Assertions.assertEquals("X", matchOddsList.getFirst().getSpecifier());
-    }
-
-    @Test
-    void testFindBySpecifierAndOdd(){
-        matchService.save(match);
-        MatchOdds savedMatchOdds = matchOddsService.save(matchOdds);
-        Assertions.assertNotNull(savedMatchOdds);
-
-        List<MatchOdds> matchOddsList = matchOddsService.findBySpecifierAndOdd("X", 1.5);
-        Assertions.assertEquals(1, matchOddsList.size());
-        Assertions.assertEquals("X", matchOddsList.getFirst().getSpecifier());
-        Assertions.assertEquals(1.5, matchOddsList.getFirst().getOdd());
-    }
-
-    @Test
-    void testFindBySpecifierAndOddGreaterThan(){
-        matchService.save(match);
-        MatchOdds savedMatchOdds = matchOddsService.save(matchOdds);
-        Assertions.assertNotNull(savedMatchOdds);
-
-        List<MatchOdds> matchOddsList = matchOddsService.findBySpecifierAndOddGreaterThan("X", 1.4);
-        Assertions.assertEquals(1, matchOddsList.size());
-        Assertions.assertEquals("X", matchOddsList.getFirst().getSpecifier());
-        Assertions.assertEquals(1.5, matchOddsList.getFirst().getOdd());
-    }
-
-    @Test
-    void testFindBySpecifierAndOddGreaterThanEqual(){
-        matchService.save(match);
-        MatchOdds savedMatchOdds = matchOddsService.save(matchOdds);
-        Assertions.assertNotNull(savedMatchOdds);
-
-        List<MatchOdds> matchOddsList = matchOddsService.findBySpecifierAndOddGreaterThanEqual("X",  1.5);
-        Assertions.assertEquals(1, matchOddsList.size());
-        Assertions.assertEquals("X", matchOddsList.getFirst().getSpecifier());
-        Assertions.assertEquals(1.5, matchOddsList.getFirst().getOdd());
-    }
-
-    @Test
-    void testFindBySpecifierAndOddLessThan(){
-        matchService.save(match);
-        MatchOdds savedMatchOdds = matchOddsService.save(matchOdds);
-        Assertions.assertNotNull(savedMatchOdds);
-
-        List<MatchOdds> matchOddsList = matchOddsService.findBySpecifierAndOddLessThan("X", 1.6);
-        Assertions.assertEquals(1, matchOddsList.size());
-        Assertions.assertEquals("X", matchOddsList.getFirst().getSpecifier());
-        Assertions.assertEquals(1.5, matchOddsList.getFirst().getOdd());
-    }
-
-    @Test
-    void testFindBySpecifierAndOddLessThanEqual(){
-        matchService.save(match);
-        MatchOdds savedMatchOdds = matchOddsService.save(matchOdds);
-        Assertions.assertNotNull(savedMatchOdds);
-
-        List<MatchOdds> matchOddsList = matchOddsService.findBySpecifierAndOddLessThanEqual("X", 1.5);
-        Assertions.assertEquals(1, matchOddsList.size());
-        Assertions.assertEquals("X", matchOddsList.getFirst().getSpecifier());
-        Assertions.assertEquals(1.5, matchOddsList.getFirst().getOdd());
-    }
-
-    @Test
     void testSaveAll(){
         matchService.save(match);
         List<MatchOdds> matchOddsList = new ArrayList<>();
@@ -216,7 +41,7 @@ public class MatchOddsServiceTest extends Initializer {
             MatchOdds mo = new MatchOdds(
                     match,
                     "x",
-                    (double)i
+                    i
             );
             matchOddsList.add(mo);
         }
@@ -226,14 +51,27 @@ public class MatchOddsServiceTest extends Initializer {
     }
 
     @Test
-    void testDelete(){
+    void testSearchMatchOdds_withFilters() {
+        MatchOdds odds1 = new MatchOdds(match, "1", 1.80);
+        MatchOdds odds2 = new MatchOdds(match, "2", 2.10);
+        MatchOdds odds3 = new MatchOdds(match, "2", 2.50);
         matchService.save(match);
-        MatchOdds savedMatchOdds = matchOddsService.save(matchOdds);
-        Assertions.assertNotNull(savedMatchOdds);
+        matchOddsService.saveAll(List.of(odds1, odds2, odds3));
 
-        matchOddsService.delete(savedMatchOdds);
-        List<MatchOdds> matchOddsList = matchOddsService.findAll();
-        Assertions.assertEquals(0, matchOddsList.size());
+        // Act
+        List<MatchOdds> result = matchOddsService.searchMatchOdds(
+                "2",
+                null,
+                2.0,
+                2.4,
+                match.getId()
+        );
+
+        // Assert
+        Assertions.assertEquals(1, result.size());
+        Assertions.assertEquals("2", result.getFirst().getSpecifier());
+        Assertions.assertEquals(2.10, result.getFirst().getOdd());
+        Assertions.assertEquals(match.getId(), result.getFirst().getMatch().getId());
     }
 
     @Test
@@ -255,7 +93,7 @@ public class MatchOddsServiceTest extends Initializer {
             MatchOdds mo = new MatchOdds(
                     match,
                     "x",
-                    (double)i
+                    i
             );
             MatchOdds moAdded = matchOddsService.save(mo);
             ids.add(moAdded.getId());
@@ -273,7 +111,7 @@ public class MatchOddsServiceTest extends Initializer {
             MatchOdds mo = new MatchOdds(
                     match,
                     "x",
-                    (double)i
+                    i
             );
             matchOddsService.save(mo);
         }
@@ -301,7 +139,7 @@ public class MatchOddsServiceTest extends Initializer {
             MatchOdds mo = new MatchOdds(
                     match,
                     "x",
-                    (double)i
+                    i
             );
             matchOddsList.add(mo);
         }
@@ -315,27 +153,5 @@ public class MatchOddsServiceTest extends Initializer {
         for(MatchOdds mo : updatedMatchOdds){
             Assertions.assertEquals("1", mo.getSpecifier());
         }
-    }
-
-    @Test
-    void testUpdateSpecifier(){
-        matchService.save(match);
-        MatchOdds savedMatchOdds = matchOddsService.save(matchOdds);
-
-        matchOddsService.updateSpecifier(savedMatchOdds.getId(), "2");
-        List<MatchOdds> matchOddsList = matchOddsService.findAll();
-        Assertions.assertEquals(1, matchOddsList.size());
-        Assertions.assertEquals("2", matchOddsList.getFirst().getSpecifier());
-    }
-
-    @Test
-    void testUpdateOdd(){
-        matchService.save(match);
-        MatchOdds savedMatchOdds = matchOddsService.save(matchOdds);
-
-        matchOddsService.updateOdd(savedMatchOdds.getId(), 2.0);
-        List<MatchOdds> matchOddsList = matchOddsService.findAll();
-        Assertions.assertEquals(1, matchOddsList.size());
-        Assertions.assertEquals(2.0, matchOddsList.getFirst().getOdd());
     }
 }

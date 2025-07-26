@@ -1,10 +1,10 @@
 package com.example.matchmanagementapi.service;
 
-import com.example.matchmanagementapi.domain.Match;
 import com.example.matchmanagementapi.domain.MatchOdds;
 import com.example.matchmanagementapi.repository.MatchOddsRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,8 +13,8 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MatchOddsService {
     private final MatchOddsRepository matchOddsRepository;
-    private final MatchService matchService;
 
+    // <editor-fold desc="FIND Methods">
     public List<MatchOdds> findAll() {
         return matchOddsRepository.findAll();
     }
@@ -28,71 +28,44 @@ public class MatchOddsService {
                 .orElseThrow(() -> new EntityNotFoundException("Match odds not found with id: " + id));
     }
 
-    public List<MatchOdds> findByMatch(Match match){
-        return matchOddsRepository.findByMatch(match);
-    }
+    public List<MatchOdds> searchMatchOdds(
+            String specifier,
+            Double odd,
+            Double oddOver,
+            Double oddUnder,
+            Long matchId
+    ) {
+        Specification<MatchOdds> spec = (root, query, cb) -> cb.conjunction();
 
-    public List<MatchOdds> findByMatchId(Long matchId){
-        Match match = matchService.find(matchId);
-        return  matchOddsRepository.findByMatch(match);
-    }
-
-    public List<MatchOdds> findByMatchAndOdd(Match match, double odd){
-        return matchOddsRepository.findByMatchAndOdd(match, odd);
-    }
-
-    public List<MatchOdds> findByOdd(Double odd){
-        return matchOddsRepository.findByOdd(odd);
-    }
-
-    public List<MatchOdds> findByOddGreaterThan(double odd){
-        return matchOddsRepository.findByOddGreaterThan(odd);
-    }
-
-    public List<MatchOdds> findByOddGreaterThanEqual(double odd){
-        return matchOddsRepository.findByOddGreaterThanEqual(odd);
-    }
-
-    public List<MatchOdds> findByOddLessThan(double odd){
-        return matchOddsRepository.findByOddLessThan(odd);
-    }
-
-    public List<MatchOdds> findByOddLessThanEqual(double odd){
-        return matchOddsRepository.findByOddLessThanEqual(odd);
-    }
-
-    public List<MatchOdds> findByOddBetween(double odd1, double odd2){
-        if (odd1 > odd2) {
-            throw new IllegalArgumentException("The lower bound (odd1) must be less than or equal to the upper bound (odd2).");
+        if (specifier != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("specifier"), specifier));
         }
 
-        return matchOddsRepository.findByOddBetween(odd1, odd2);
+        if (odd != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("odd"), odd));
+        }
+
+        if (oddOver != null) {
+            spec = spec.and((root, query, cb) -> cb.greaterThan(root.get("odd"), oddOver));
+        }
+
+        if (oddUnder != null) {
+            spec = spec.and((root, query, cb) -> cb.lessThan(root.get("odd"), oddUnder));
+        }
+
+        if (matchId != null) {
+            spec = spec.and((root, query, cb) -> cb.equal(root.get("match").get("id"), matchId));
+        }
+
+        return matchOddsRepository.findAll(spec);
     }
 
-    public List<MatchOdds> findBySpecifier(String specifier){
-        return matchOddsRepository.findBySpecifier(specifier);
+    public long getRecordsCount(){
+        return matchOddsRepository.count();
     }
+    // </editor-fold>
 
-    public List<MatchOdds> findBySpecifierAndOdd(String specifier, double odd){
-        return matchOddsRepository.findBySpecifierAndOdd(specifier, odd);
-    }
-
-    public List<MatchOdds> findBySpecifierAndOddGreaterThan(String specifier, double odd){
-        return matchOddsRepository.findBySpecifierAndOddGreaterThan(specifier, odd);
-    }
-
-    public List<MatchOdds> findBySpecifierAndOddGreaterThanEqual(String specifier, double odd){
-        return matchOddsRepository.findBySpecifierAndOddGreaterThanEqual(specifier, odd);
-    }
-
-    public List<MatchOdds> findBySpecifierAndOddLessThan(String specifier, double odd){
-        return matchOddsRepository.findBySpecifierAndOddLessThan(specifier, odd);
-    }
-
-    public List<MatchOdds> findBySpecifierAndOddLessThanEqual(String specifier, double odd){
-        return matchOddsRepository.findBySpecifierAndOddLessThanEqual(specifier, odd);
-    }
-
+    // <editor-fold desc="SAVE Methods">
     public List<MatchOdds> saveAll(List<MatchOdds> matchList){
         return matchOddsRepository.saveAll(matchList);
     }
@@ -100,24 +73,21 @@ public class MatchOddsService {
     public MatchOdds save(MatchOdds matchOdds){
         return matchOddsRepository.save(matchOdds);
     }
+    // </editor-fold>
 
-    public void delete(MatchOdds match){
-        matchOddsRepository.delete(match);
-    }
-
+    // <editor-fold desc="DELETE Methods">
     public void deleteById(Long id){
-        find(id);
-        matchOddsRepository.deleteById(id);
+        MatchOdds matchOdds = find(id);
+        if(matchOdds!=null)
+            matchOddsRepository.deleteById(id);
     }
 
     public void deleteByIds(List<Long> ids){
         matchOddsRepository.deleteAllById(ids);
     }
+    // </editor-fold>
 
-    public long getRecordsCount(){
-        return matchOddsRepository.count();
-    }
-
+    // <editor-fold desc="UPDATE Methods">
     public MatchOdds update(MatchOdds matchOdds){
         return matchOddsRepository.save(matchOdds);
     }
@@ -125,14 +95,5 @@ public class MatchOddsService {
     public List<MatchOdds> update(List<MatchOdds> matchOddsList){
         return matchOddsRepository.saveAll(matchOddsList);
     }
-
-    public void updateSpecifier(Long id, String specifier){
-        find(id);
-        matchOddsRepository.updateSpecifierById(id, specifier);
-    }
-
-    public void updateOdd(Long id, double odd){
-        find(id);
-        matchOddsRepository.updateOddById(id, odd);
-    }
+    // </editor-fold>
 }

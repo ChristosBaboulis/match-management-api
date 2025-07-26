@@ -25,10 +25,6 @@ public class Initializer {
     protected String description = "OSFP-PAO";
     protected String teamA = "OSFP";
     protected String teamB = "PAO";
-    protected LocalDate testMatchDateBefore = LocalDate.parse("30/03/2021", formatter);
-    protected LocalDate testMatchDateAfter = LocalDate.parse("31/04/2021", formatter);
-    protected LocalTime testMatchTimeBefore = LocalTime.of(11, 0);
-    protected LocalTime testMatchTimeAfter = LocalTime.of(13, 0);
 
     protected MatchOdds matchOdds;
 

@@ -18,8 +18,6 @@ import java.util.List;
 @SpringBootTest
 public class MatchOddsMapperTest extends Initializer {
     @Autowired
-    private MatchMapper matchMapper;
-    @Autowired
     private MatchOddsMapper matchOddsMapper;
 
     @Test

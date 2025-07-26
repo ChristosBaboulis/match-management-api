@@ -9,8 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @ActiveProfiles("test")
 @SpringBootTest
@@ -32,114 +34,6 @@ public class MatchServiceTest extends Initializer {
     }
 
     @Test
-    void testFindByDescription(){
-        Match savedMatch = matchService.save(match);
-        Assertions.assertNotNull(savedMatch);
-
-        List<Match> matchList = matchService.findByDescription(savedMatch.getDescription());
-        Assertions.assertEquals(1, matchList.size());
-    }
-
-    @Test
-    void testFindByMatchDate(){
-        Match savedMatch = matchService.save(match);
-        Assertions.assertNotNull(savedMatch);
-
-        List<Match> matchList = matchService.findByMatchDate(savedMatch.getMatchDate());
-        Assertions.assertEquals(1, matchList.size());
-    }
-
-    @Test
-    void testFindByMatchDateBetween(){
-        Match savedMatch = matchService.save(match);
-        Assertions.assertNotNull(savedMatch);
-
-        List<Match> matchList = matchService.findByMatchDateBetween(testMatchDateBefore, testMatchDateAfter);
-        Assertions.assertEquals(1, matchList.size());
-    }
-
-    @Test
-    void testFindByMatchDateBefore(){
-        Match savedMatch = matchService.save(match);
-        Assertions.assertNotNull(savedMatch);
-
-        List<Match> matchList = matchService.findByMatchDateBefore(testMatchDateAfter);
-        Assertions.assertEquals(1, matchList.size());
-    }
-
-    @Test
-    void testFindByMatchDateAfter(){
-        Match savedMatch = matchService.save(match);
-        Assertions.assertNotNull(savedMatch);
-
-        List<Match> matchList = matchService.findByMatchDateAfter(testMatchDateBefore);
-        Assertions.assertEquals(1, matchList.size());
-    }
-
-    @Test
-    void testFindByMatchTime(){
-        Match savedMatch = matchService.save(match);
-        Assertions.assertNotNull(savedMatch);
-
-        List<Match> matchList = matchService.findByMatchTime(testMatchTime);
-        Assertions.assertEquals(1, matchList.size());
-    }
-
-    @Test
-    void testFindByMatchTimeBefore(){
-        Match savedMatch = matchService.save(match);
-        Assertions.assertNotNull(savedMatch);
-
-        List<Match> matchList = matchService.findByMatchTimeBefore(testMatchTimeAfter);
-        Assertions.assertEquals(1, matchList.size());
-    }
-
-    @Test
-    void testFindByMatchTimeAfter(){
-        Match savedMatch = matchService.save(match);
-        Assertions.assertNotNull(savedMatch);
-
-        List<Match> matchList = matchService.findByMatchTimeAfter(testMatchTimeBefore);
-        Assertions.assertEquals(1, matchList.size());
-    }
-
-    @Test
-    void testFindByTeamA(){
-        Match savedMatch = matchService.save(match);
-        Assertions.assertNotNull(savedMatch);
-
-        List<Match> matchList = matchService.findByTeamA(savedMatch.getTeamA());
-        Assertions.assertEquals(1, matchList.size());
-    }
-
-    @Test
-    void testFindByTeamB(){
-        Match savedMatch = matchService.save(match);
-        Assertions.assertNotNull(savedMatch);
-
-        List<Match> matchList = matchService.findByTeamB(savedMatch.getTeamB());
-        Assertions.assertEquals(1, matchList.size());
-    }
-
-    @Test
-    void testFindByTeamAAndTeamB(){
-        Match savedMatch = matchService.save(match);
-        Assertions.assertNotNull(savedMatch);
-
-        List<Match> matchList = matchService.findByTeamAAndTeamB(savedMatch.getTeamA(), savedMatch.getTeamB());
-        Assertions.assertEquals(1, matchList.size());
-    }
-
-    @Test
-    void testFindBySport(){
-        Match savedMatch = matchService.save(match);
-        Assertions.assertNotNull(savedMatch);
-
-        List<Match> matchList = matchService.findBySport(savedMatch.getSport());
-        Assertions.assertEquals(1, matchList.size());
-    }
-
-    @Test
     void testSaveAll(){
         List<Match> matches = new ArrayList<>();
         for (int i=0; i<5; i++){
@@ -157,6 +51,49 @@ public class MatchServiceTest extends Initializer {
         matchService.saveAll(matches);
         List<Match> matchList = matchService.findAll();
         Assertions.assertEquals(5, matchList.size());
+    }
+
+    @Test
+    void testSearchMatches_withFilters() {
+        Match match1 = new Match("OSFP-PAO", testMatchDate, LocalTime.of(20, 0), "OSFP", "PAO", Sport.Football);
+        Match match2 = new Match("AEK-PAO", testMatchDate.plusDays(1), testMatchTime.plusHours(1), "AEK", "PAO", Sport.Football);
+        Match match3 = new Match("OSFP-ARIS", testMatchDate.minusDays(1), testMatchTime.minusHours(1), "OSFP", "ARIS", Sport.Basketball);
+
+        matchService.saveAll(List.of(match1, match2, match3));
+
+        List<Match> result = matchService.searchMatches(
+                null,
+                "OSFP",
+                null,
+                Sport.Football,
+                null,
+                testMatchDate.plusDays(2),
+                null,
+                null,
+                null,
+                LocalTime.of(18, 0)
+        );
+
+        Assertions.assertEquals(1, result.size());
+        Assertions.assertEquals("OSFP-PAO", result.getFirst().getDescription());
+    }
+
+    @Test
+    void testGetRecordsCount(){
+        for (int i=0; i<5; i++){
+            Match m = new Match(
+                    "Team" + i + "-Team" + (i+1),
+                    testMatchDate,
+                    testMatchTime,
+                    "Team" + i,
+                    "Team" + (i+1),
+                    testSport
+            );
+            matchService.save(m);
+        }
+
+        long count = matchService.getRecordsCount();
+        Assertions.assertEquals(5, count);
     }
 
     @Test
@@ -188,24 +125,6 @@ public class MatchServiceTest extends Initializer {
         matchService.deleteByIds(ids);
         List<Match> matchList = matchService.findAll();
         Assertions.assertEquals(0, matchList.size());
-    }
-
-    @Test
-    void testGetRecordsCount(){
-        for (int i=0; i<5; i++){
-            Match m = new Match(
-                    "Team" + i + "-Team" + (i+1),
-                    testMatchDate,
-                    testMatchTime,
-                    "Team" + i,
-                    "Team" + (i+1),
-                    testSport
-            );
-            matchService.save(m);
-        }
-
-        long count = matchService.getRecordsCount();
-        Assertions.assertEquals(5, count);
     }
 
     @Test
@@ -259,74 +178,38 @@ public class MatchServiceTest extends Initializer {
     }
 
     @Test
-    void TestUpdateMatchDate(){
+    void testPartialUpdate_teamAChange_updatesDescriptionAutomatically() {
         Match savedMatch = matchService.save(match);
         Assertions.assertNotNull(savedMatch);
 
-        matchService.updateMatchDate(savedMatch.getId(), testMatchDateBefore);
-        Assertions.assertEquals(testMatchDateBefore, matchService.find(savedMatch.getId()).getMatchDate());
+        Map<String, Object> updates = Map.of("teamA", "AEK");
+        Match updatedMatch = matchService.partialUpdate(savedMatch.getId(), updates);
+
+        Assertions.assertEquals("AEK", updatedMatch.getTeamA());
+        Assertions.assertEquals("PAO", updatedMatch.getTeamB());
+        Assertions.assertEquals("AEK-PAO", updatedMatch.getDescription());
     }
 
     @Test
-    void testUpdateMatchTime(){
+    void testPartialUpdate_descriptionChange_updatesTeamsAutomatically() {
         Match savedMatch = matchService.save(match);
         Assertions.assertNotNull(savedMatch);
 
-        matchService.updateMatchTime(savedMatch.getId(), testMatchTimeBefore);
-        Assertions.assertEquals(testMatchTimeBefore, matchService.find(savedMatch.getId()).getMatchTime());
+        Map<String, Object> updates = Map.of("description", "AEK-ARIS");
+        Match updatedMatch = matchService.partialUpdate(savedMatch.getId(), updates);
+
+        Assertions.assertEquals("AEK", updatedMatch.getTeamA());
+        Assertions.assertEquals("ARIS", updatedMatch.getTeamB());
+        Assertions.assertEquals("AEK-ARIS", updatedMatch.getDescription());
     }
 
     @Test
-    void testupdateDescription(){
+    void testPartialUpdate_invalidDescriptionFormat_throwsException() {
         Match savedMatch = matchService.save(match);
         Assertions.assertNotNull(savedMatch);
 
-        matchService.updateDescription(savedMatch.getId(), "AEK-PAOK");
-        Assertions.assertEquals("AEK-PAOK", matchService.find(savedMatch.getId()).getDescription());
-        Assertions.assertEquals("AEK", matchService.find(savedMatch.getId()).getTeamA());
-        Assertions.assertEquals("PAOK", matchService.find(savedMatch.getId()).getTeamB());
+        Map<String, Object> updates = Map.of("description", "INVALID_DESCRIPTION");
 
-        Assertions.assertThrows(IllegalArgumentException.class,
-                () -> matchService.updateDescription(savedMatch.getId(), "PAOK-PAO-AEK"));
-    }
-
-    @Test
-    void testUpdateTeamA(){
-        Match savedMatch = matchService.save(match);
-        Assertions.assertNotNull(savedMatch);
-
-        matchService.updateTeamA(savedMatch.getId(), "AEK");
-        Assertions.assertEquals("AEK", matchService.find(savedMatch.getId()).getTeamA());
-        Assertions.assertEquals("AEK-PAO", matchService.find(savedMatch.getId()).getDescription());
-    }
-
-    @Test
-    void testUpdateTeamB(){
-        Match savedMatch = matchService.save(match);
-        Assertions.assertNotNull(savedMatch);
-
-        matchService.updateTeamB(savedMatch.getId(), "AEK");
-        Assertions.assertEquals("AEK", matchService.find(savedMatch.getId()).getTeamB());
-        Assertions.assertEquals("OSFP-AEK", matchService.find(savedMatch.getId()).getDescription());
-    }
-
-    @Test
-    void testUpdateBothTeams(){
-        Match savedMatch = matchService.save(match);
-        Assertions.assertNotNull(savedMatch);
-
-        matchService.updateBothTeams(savedMatch.getId(), "AEK", "PAOK");
-        Assertions.assertEquals("AEK", matchService.find(savedMatch.getId()).getTeamA());
-        Assertions.assertEquals("PAOK", matchService.find(savedMatch.getId()).getTeamB());
-        Assertions.assertEquals("AEK-PAOK", matchService.find(savedMatch.getId()).getDescription());
-    }
-
-    @Test
-    void testUpdateSport(){
-        Match savedMatch = matchService.save(match);
-        Assertions.assertNotNull(savedMatch);
-
-        matchService.updateSport(savedMatch.getId(), testSport);
-        Assertions.assertEquals(testSport, matchService.find(savedMatch.getId()).getSport());
+        Assertions.assertThrows(IllegalArgumentException.class, () -> matchService.partialUpdate(savedMatch.getId(), updates));
     }
 }
