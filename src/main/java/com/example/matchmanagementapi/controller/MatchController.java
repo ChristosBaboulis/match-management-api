@@ -204,9 +204,8 @@ public class MatchController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<MatchDTO> updateMatch(@PathVariable Long id, @RequestBody MatchDTO matchDTO){
-        matchDTO.setId(id);
         Match match = matchMapper.toEntity(matchDTO);
-        Match updatedMatch = matchService.update(match);
+        Match updatedMatch = matchService.update(id, match);
         return ResponseEntity.ok(matchMapper.toDTO(updatedMatch));
     }
 

@@ -119,12 +119,24 @@ public class MatchService {
     // </editor-fold>
 
     // <editor-fold desc="UPDATE Methods">
-    public Match update(Match match){
+    public Match update(Long id, Match match){
+        Match existing = matchRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Match not found"));
+
         if(!((match.getTeamA() + "-" + match.getTeamB()).equals(match.getDescription()))){
             match.setDescription(generateDescription(match.getTeamA(), match.getTeamB()));
         }
 
-        return matchRepository.save(match);
+        existing.setDescription(match.getDescription());
+        existing.setMatchDate(match.getMatchDate());
+        existing.setMatchTime(match.getMatchTime());
+        existing.setTeamA(match.getTeamA());
+        existing.setTeamB(match.getTeamB());
+        existing.setSport(match.getSport());
+
+        System.out.println("Saving match: " + existing);
+
+        return matchRepository.save(existing);
     }
 
     public List<Match> update(List<Match> matchList){
