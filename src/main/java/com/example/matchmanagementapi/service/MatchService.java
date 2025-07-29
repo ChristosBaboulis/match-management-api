@@ -6,7 +6,9 @@ import com.example.matchmanagementapi.exception.ResourceNotFoundException;
 import com.example.matchmanagementapi.repository.MatchRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -14,6 +16,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -94,10 +97,36 @@ public class MatchService {
 
     // <editor-fold desc="SAVE Methods">
     public List<Match> saveAll(List<Match> matchList){
-        return matchRepository.saveAll(matchList);
+        List<Match> uniqueMatches = matchList.stream()
+                .filter(match -> !matchRepository.existsByDescriptionAndMatchDateAndMatchTimeAndTeamAAndTeamBAndSport(
+                        match.getDescription(),
+                        match.getMatchDate(),
+                        match.getMatchTime(),
+                        match.getTeamA(),
+                        match.getTeamB(),
+                        match.getSport()
+                ))
+                .peek(match -> match.setDescription(generateDescription(match.getTeamA(), match.getTeamB())))
+                .collect(Collectors.toList());
+
+        return matchRepository.saveAll(uniqueMatches);
     }
 
     public Match save(Match match){
+        boolean exists = matchRepository.existsByDescriptionAndMatchDateAndMatchTimeAndTeamAAndTeamBAndSport(
+                match.getDescription(),
+                match.getMatchDate(),
+                match.getMatchTime(),
+                match.getTeamA(),
+                match.getTeamB(),
+                match.getSport()
+        );
+
+        if (exists) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "Match already exists.");
+        }
+
+        match.setDescription(generateDescription(match.getTeamA(), match.getTeamB()));
         return matchRepository.save(match);
     }
     // </editor-fold>

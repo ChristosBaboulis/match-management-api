@@ -138,9 +138,23 @@ To import:
     - If either `teamA` or `teamB` is modified, the `description` is automatically regenerated.
     - In case of a conflict during save or update (e.g., all three fields differ), the `description` is recomputed based on the team values.
 
+
+- Duplicate prevention logic is enforced during Match and MatchOdds creation:
+
+    - **Match**:
+        - On `POST`, if a `Match` with the same `description`, `matchDate`, `matchTime`, `teamA`, `teamB`, and `sport` already exists, the request is rejected with HTTP 409 Conflict (for single inserts).
+        - On batch insert (`POST /matches` with a list), such entries are silently skipped.
+        - The `description` is always (re)generated as `teamA + "-" + teamB` before saving.
+
+    - **MatchOdds**:
+        - On `POST`, if a `MatchOdds` with the same `specifier`, `odd`, and associated `Match` already exists, the request is rejected with HTTP 409 Conflict (for single inserts).
+        - On batch insert (`POST /matchOdds/batch`), duplicates are silently skipped.
+
+
 - The `MatchOdds` entity has a many-to-one relationship with `Match`, meaning:
     - Each `MatchOdds` record is associated with one `Match`.
     - On insert or update, the system verifies that the referenced `Match` exists in the database.
+
 
 - Relationship definition in the `MatchOdds` entity:
 

@@ -10,4 +10,6 @@ import java.util.List;
 @Repository
 public interface MatchOddsRepository extends JpaRepository<MatchOdds, Long>, JpaSpecificationExecutor<MatchOdds> {
     List<MatchOdds> findByMatchId(Long matchId);
+
+    boolean existsBySpecifierAndOddAndMatch_Id(String specifier, double odd, Long matchId);
 }

@@ -6,11 +6,14 @@ import com.example.matchmanagementapi.exception.ResourceNotFoundException;
 import com.example.matchmanagementapi.repository.MatchOddsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -70,12 +73,33 @@ public class MatchOddsService {
     // </editor-fold>
 
     // <editor-fold desc="SAVE Methods">
-    public List<MatchOdds> saveAll(List<MatchOdds> matchList){
-        return matchOddsRepository.saveAll(matchList);
+    public List<MatchOdds> saveAll(List<MatchOdds> matchOddsList){
+        return matchOddsList.stream()
+                .filter(o -> !matchOddsRepository.existsBySpecifierAndOddAndMatch_Id(
+                        o.getSpecifier(),
+                        o.getOdd(),
+                        o.getMatch().getId()
+                ))
+                .map(o -> {
+                    matchService.find(o.getMatch().getId()); // προληπτικός έλεγχος ότι υπάρχει
+                    return o;
+                })
+                .collect(Collectors.collectingAndThen(Collectors.toList(), matchOddsRepository::saveAll));
     }
 
     public MatchOdds save(MatchOdds matchOdds){
         matchService.find(matchOdds.getMatch().getId());
+
+        boolean exists = matchOddsRepository.existsBySpecifierAndOddAndMatch_Id(
+                matchOdds.getSpecifier(),
+                matchOdds.getOdd(),
+                matchOdds.getMatch().getId()
+        );
+
+        if (exists) {
+            throw new ResponseStatusException(HttpStatus.CONFLICT, "MatchOdds already exists.");
+        }
+
         return matchOddsRepository.save(matchOdds);
     }
     // </editor-fold>
