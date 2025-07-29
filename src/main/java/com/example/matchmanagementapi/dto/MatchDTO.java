@@ -10,11 +10,11 @@ import java.time.LocalTime;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @Data
 public class MatchDTO {
-    public Long id;
-    public String description;
-    public LocalDate matchDate;
-    public LocalTime matchTime;
-    public String teamA;
-    public String teamB;
-    public Sport sport;
+    private Long id;
+    private String description;
+    private LocalDate matchDate;
+    private LocalTime matchTime;
+    private String teamA;
+    private String teamB;
+    private Sport sport;
 }

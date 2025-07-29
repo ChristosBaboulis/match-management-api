@@ -1,70 +1,110 @@
 package com.example.matchmanagementapi.dto;
 
-import com.example.matchmanagementapi.Initializer;
+import com.example.matchmanagementapi.domain.Match;
 import com.example.matchmanagementapi.domain.MatchOdds;
 import com.example.matchmanagementapi.domain.Sport;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Collections;
 import java.util.List;
 
-@ActiveProfiles("test")
-@SpringBootTest
-public class MatchOddsMapperTest extends Initializer {
-    @Autowired
-    private MatchOddsMapper matchOddsMapper;
+import static org.junit.jupiter.api.Assertions.*;
+
+class MatchOddsMapperTest {
+
+    private Match createSampleMatch() {
+        Match match = new Match();
+        match.setId(1L);
+        match.setDescription("TeamA-TeamB");
+        match.setMatchDate(LocalDate.of(2025, 7, 29));
+        match.setMatchTime(LocalTime.of(21, 0));
+        match.setTeamA("TeamA");
+        match.setTeamB("TeamB");
+        match.setSport(Sport.Football);
+        return match;
+    }
 
     @Test
     void testToDTO() {
-        MatchOddsDTO dto = matchOddsMapper.toDTO(matchOdds);
+        Match match = createSampleMatch();
 
-        Assertions.assertNotNull(dto);
-        Assertions.assertEquals("X", dto.getSpecifier());
-        Assertions.assertEquals(1.5, dto.getOdd());
-        Assertions.assertNotNull(dto.getMatch());
-        Assertions.assertEquals("OSFP", dto.getMatch().getTeamA());
+        MatchOdds odds = new MatchOdds();
+        odds.setId(100L);
+        odds.setSpecifier("1");
+        odds.setOdd(2.5);
+        odds.setMatch(match);
+
+        MatchOddsDTO dto = MatchOddsMapper.toDTO(odds);
+
+        assertEquals(100L, dto.getId());
+        assertEquals("1", dto.getSpecifier());
+        assertEquals(2.5, dto.getOdd());
+        assertEquals(1L, dto.getMatchId());
     }
 
     @Test
     void testToEntity() {
-        MatchDTO matchDTO = new MatchDTO();
-        matchDTO.setTeamA("Team A");
-        matchDTO.setTeamB("Team B");
-        matchDTO.setDescription("Semi-final");
-        matchDTO.setMatchDate(LocalDate.now());
-        matchDTO.setMatchTime(LocalTime.of(20, 30));
-        matchDTO.setSport(Sport.Football);
+        Match match = createSampleMatch();
 
         MatchOddsDTO dto = new MatchOddsDTO();
-        dto.setMatch(matchDTO);
+        dto.setId(101L);
         dto.setSpecifier("X");
-        dto.setOdd(2.15);
+        dto.setOdd(3.1);
+        dto.setMatchId(1L);
 
-        MatchOdds entity = matchOddsMapper.toEntity(dto);
+        MatchOdds entity = MatchOddsMapper.toEntity(dto, match);
 
-        Assertions.assertNotNull(entity);
-        Assertions.assertEquals("X", entity.getSpecifier());
-        Assertions.assertEquals(2.15, entity.getOdd());
-        Assertions.assertNotNull(entity.getMatch());
-        Assertions.assertEquals("Team A", entity.getMatch().getTeamA());
+        assertEquals(101L, entity.getId());
+        assertEquals("X", entity.getSpecifier());
+        assertEquals(3.1, entity.getOdd());
+        assertEquals(1L, entity.getMatch().getId());
     }
 
     @Test
-    void testListMapping() {
-        MatchOdds matchOdds = new MatchOdds(match, "2", 3.10);
+    void testToDTOList() {
+        Match match = createSampleMatch();
 
-        List<MatchOddsDTO> dtoList = matchOddsMapper.toDTO(Collections.singletonList(matchOdds));
-        Assertions.assertEquals(1, dtoList.size());
-        Assertions.assertEquals("2", dtoList.getFirst().getSpecifier());
+        MatchOdds o1 = new MatchOdds();
+        o1.setId(1L);
+        o1.setSpecifier("1");
+        o1.setOdd(2.0);
+        o1.setMatch(match);
 
-        List<MatchOdds> entityList = matchOddsMapper.toEntity(dtoList);
-        Assertions.assertEquals(1, entityList.size());
-        Assertions.assertEquals("2", entityList.getFirst().getSpecifier());
+        MatchOdds o2 = new MatchOdds();
+        o2.setId(2L);
+        o2.setSpecifier("2");
+        o2.setOdd(3.5);
+        o2.setMatch(match);
+
+        List<MatchOddsDTO> dtos = MatchOddsMapper.toDTO(List.of(o1, o2));
+
+        assertEquals(2, dtos.size());
+        assertEquals("1", dtos.get(0).getSpecifier());
+        assertEquals("2", dtos.get(1).getSpecifier());
+    }
+
+    @Test
+    void testToEntityList() {
+        Match match = createSampleMatch();
+
+        MatchOddsDTO d1 = new MatchOddsDTO();
+        d1.setId(1L);
+        d1.setSpecifier("1");
+        d1.setOdd(2.0);
+        d1.setMatchId(1L);
+
+        MatchOddsDTO d2 = new MatchOddsDTO();
+        d2.setId(2L);
+        d2.setSpecifier("2");
+        d2.setOdd(3.5);
+        d2.setMatchId(1L);
+
+        List<MatchOdds> entities = MatchOddsMapper.toEntity(List.of(d1, d2), match);
+
+        assertEquals(2, entities.size());
+        assertEquals("1", entities.get(0).getSpecifier());
+        assertEquals("2", entities.get(1).getSpecifier());
+        assertEquals(1L, entities.get(0).getMatch().getId());
     }
 }

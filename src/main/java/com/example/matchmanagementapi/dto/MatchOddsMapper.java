@@ -1,18 +1,44 @@
 package com.example.matchmanagementapi.dto;
 
+import com.example.matchmanagementapi.domain.Match;
 import com.example.matchmanagementapi.domain.MatchOdds;
-import org.mapstruct.InjectionStrategy;
-import org.mapstruct.Mapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
-@Mapper(componentModel = "spring", uses = MatchMapper.class, injectionStrategy = InjectionStrategy.CONSTRUCTOR)
-public abstract class MatchOddsMapper {
-    public abstract MatchOddsDTO toDTO(MatchOdds entity);
+public class MatchOddsMapper {
 
-    public abstract MatchOdds toEntity(MatchOddsDTO dto);
+    public static MatchOddsDTO toDTO(MatchOdds entity) {
+        MatchOddsDTO dto = new MatchOddsDTO();
+        dto.setId(entity.getId());
+        dto.setSpecifier(entity.getSpecifier());
+        dto.setOdd(entity.getOdd());
+        dto.setMatchId(entity.getMatch().getId());
+        return dto;
+    }
 
-    public abstract List<MatchOddsDTO> toDTO(List<MatchOdds> entity);
+    public static MatchOdds toEntity(MatchOddsDTO dto, Match match) {
+        MatchOdds entity = new MatchOdds();
+        entity.setId(dto.getId());
+        entity.setSpecifier(dto.getSpecifier());
+        entity.setOdd(dto.getOdd());
+        entity.setMatch(match);
+        return entity;
+    }
 
-    public abstract List<MatchOdds> toEntity(List<MatchOddsDTO> dto);
+    public static List<MatchOddsDTO> toDTO(List<MatchOdds> entities) {
+        List<MatchOddsDTO> list = new ArrayList<>();
+        for (MatchOdds odds : entities) {
+            list.add(toDTO(odds));
+        }
+        return list;
+    }
+
+    public static List<MatchOdds> toEntity(List<MatchOddsDTO> dtos, Match match) {
+        List<MatchOdds> list = new ArrayList<>();
+        for (MatchOddsDTO dto : dtos) {
+            list.add(toEntity(dto, match));
+        }
+        return list;
+    }
 }

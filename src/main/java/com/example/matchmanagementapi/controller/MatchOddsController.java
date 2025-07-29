@@ -2,18 +2,15 @@ package com.example.matchmanagementapi.controller;
 
 import com.example.matchmanagementapi.domain.Match;
 import com.example.matchmanagementapi.domain.MatchOdds;
-import com.example.matchmanagementapi.dto.MatchDTO;
 import com.example.matchmanagementapi.dto.MatchOddsDTO;
 import com.example.matchmanagementapi.dto.MatchOddsMapper;
 import com.example.matchmanagementapi.service.MatchOddsService;
 import com.example.matchmanagementapi.service.MatchService;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -22,8 +19,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MatchOddsController {
     private final MatchOddsService matchOddsService;
-    private final MatchOddsMapper matchOddsMapper;
-    private final ObjectMapper objectMapper;
     private final MatchService matchService;
 
     // <editor-fold desc="GET endpoints">
@@ -46,24 +41,9 @@ public class MatchOddsController {
             @RequestParam(required = false) Double oddUnder,
             @RequestParam(required = false) Long matchId
     ) {
-        List<MatchOddsDTO> result = matchOddsMapper.toDTO(
+        List<MatchOddsDTO> result = MatchOddsMapper.toDTO(
                 matchOddsService.searchMatchOdds(specifier, odd, oddOver, oddUnder, matchId)
         );
-        return ResponseEntity.ok(result);
-    }
-
-    /**
-     * Returns a list of matchOdds by their IDs.
-     * Supports both:
-     * - GET /api/matchOdds/byIdsList?ids=1&ids=2&ids=3
-     * - GET /api/matchOdds/byIdsList?ids=1,2,3
-     *
-     * @param ids List of matchOdds IDs to retrieve.
-     * @return ResponseEntity containing the list of MatchOddsDTOs.
-     */
-    @GetMapping("/byIdsList")
-    public ResponseEntity<List<MatchOddsDTO>> getMatchesByMatchOddsIds(@RequestParam List<Long> ids){
-        List<MatchOddsDTO> result = matchOddsMapper.toDTO(matchOddsService.findAll(ids));
         return ResponseEntity.ok(result);
     }
 
@@ -77,7 +57,7 @@ public class MatchOddsController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<MatchOddsDTO> getMatchOddsById(@PathVariable Long id){
-        MatchOddsDTO result = matchOddsMapper.toDTO(matchOddsService.find(id));
+        MatchOddsDTO result = MatchOddsMapper.toDTO(matchOddsService.find(id));
         return ResponseEntity.ok(result);
     }
 
@@ -96,62 +76,56 @@ public class MatchOddsController {
 
     // <editor-fold desc="POST endpoints">
     /**
-     * Saves one or more matchOdds records to the database.
-     * Example:
-     * - Single insert: POST /api/matchOdds
-     *   Request Body:
-     *   {
-     *     "specifier": "1",
-     *     "odd": 2.5,
-     *     "match": {
-     *       "id": 5
-     *     }
-     *   }
-     * - Batch insert: POST /api/matchOdds
-     *   Request Body:
-     *   [
-     *     {
-     *       "specifier": "1",
-     *       "odd": 2.5,
-     *       "match": {
-     *         "id": 5
-     *       }
-     *     },
-     *     {
-     *       "specifier": "X",
-     *       "odd": 3.0,
-     *       "match": {
-     *         "id": 5
-     *       }
-     *     }
-     *   ]
+     * Creates a single MatchOdds entry.
+     * Example: POST /api/matchOdds
+     * Request Body:
+     * {
+     *   "matchId": 5,
+     *   "specifier": "1",
+     *   "odd": 2.5
+     * }
      *
-     * @param body The request body containing a single MatchOddsDTO or a list of MatchOddsDTOs.
-     * @return ResponseEntity containing the saved MatchOddsDTO or list of MatchOddsDTOs.
+     * @param dto The MatchOddsDTO containing the data for the new match odd.
+     * @return ResponseEntity containing the created MatchOddsDTO.
      */
     @PostMapping
-    public ResponseEntity<?> saveMatchOdds(@RequestBody Object body) {
-        if (body instanceof List<?> list && !list.isEmpty() && list.getFirst() instanceof LinkedHashMap) {
-            // Batch insert
-            List<MatchOddsDTO> matchOddsDTOs = objectMapper.convertValue(body, new TypeReference<>() {});
-            List<MatchOdds> matchOddsEntities = matchOddsDTOs.stream().map(dto -> {
-                Long matchId = dto.getMatch().getId();
-                Match match = matchService.find(matchId);
-                return new MatchOdds(match, dto.getSpecifier(), dto.getOdd());
-            }).toList();
-            List<MatchOdds> saved = matchOddsService.saveAll(matchOddsEntities);
-            return ResponseEntity.ok(matchOddsMapper.toDTO(saved));
-        } else {
-            // Single insert
-            MatchOddsDTO matchOddsDTO = objectMapper.convertValue(body, MatchOddsDTO.class);
-            Long matchId = matchOddsDTO.getMatch().getId();
-            matchService.find(matchId);
-            MatchOdds matchOdds = matchOddsMapper.toEntity(matchOddsDTO);
-            MatchOdds saved = matchOddsService.save(matchOdds);
-            return ResponseEntity.ok(matchOddsMapper.toDTO(saved));
-        }
+    public ResponseEntity<MatchOddsDTO> saveSingle(@RequestBody MatchOddsDTO dto) {
+        Match match = matchService.find(dto.getMatchId());
+        MatchOdds entity = MatchOddsMapper.toEntity(dto, match);
+        MatchOdds saved = matchOddsService.save(entity);
+        return ResponseEntity.ok(MatchOddsMapper.toDTO(saved));
     }
 
+    /**
+     * Creates multiple MatchOdds entries in batch.
+     * Example: POST /api/matchOdds/batch
+     * Request Body:
+     * [
+     *   {
+     *     "matchId": 5,
+     *     "specifier": "1",
+     *     "odd": 2.5
+     *   },
+     *   {
+     *     "matchId": 6,
+     *     "specifier": "X",
+     *     "odd": 3.1
+     *   }
+     * ]
+     *
+     * @param dtos List of MatchOddsDTOs to be created.
+     * @return ResponseEntity containing the list of created MatchOddsDTOs.
+     */
+    @PostMapping("/batch")
+    public ResponseEntity<List<MatchOddsDTO>> saveBatch(@RequestBody List<MatchOddsDTO> dtos) {
+        List<MatchOdds> entities = new ArrayList<>();
+        for (MatchOddsDTO dto : dtos) {
+            Match match = matchService.find(dto.getMatchId());
+            entities.add(MatchOddsMapper.toEntity(dto, match));
+        }
+        List<MatchOdds> saved = matchOddsService.saveAll(entities);
+        return ResponseEntity.ok(MatchOddsMapper.toDTO(saved));
+    }
     // </editor-fold>
 
     // <editor-fold desc="DELETE endpoints">
@@ -201,43 +175,11 @@ public class MatchOddsController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<MatchOddsDTO> updateMatchOdds(@PathVariable Long id, @RequestBody MatchOddsDTO matchOddsDTO){
-        matchOddsDTO.setId(id);
+        Match match = matchService.find(matchOddsDTO.getMatchId());
 
-        Long matchId = matchOddsDTO.getMatch().getId();
-        matchService.find(matchId);
-
-        MatchOdds matchOdds = matchOddsMapper.toEntity(matchOddsDTO);
-        MatchOdds updatedMatchOdds = matchOddsService.update(matchOdds);
-        return ResponseEntity.ok(matchOddsMapper.toDTO(updatedMatchOdds));
-    }
-
-    /**
-     * Updates a list of matchOdds in the database.
-     * Example: PUT /api/matchOdds/batch
-     * Request Body: [ {
-     *           "specifier": "1",
-     *           "odd": 2.5,
-     *           "match": {
-     *             "id": 5
-     *           }
-     *         }, ... ]
-     *
-     * @param matchOddsDTOs The list of MatchOddsDTOs to update.
-     * @return ResponseEntity containing the list of updated MatchOddsDTOs.
-     */
-    @PutMapping("/batch")
-    public ResponseEntity<List<MatchOddsDTO>> updateMatchOddsBatch(@RequestBody List<MatchOddsDTO> matchOddsDTOs){
-        for (MatchOddsDTO dto : matchOddsDTOs) {
-            Long matchId = dto.getMatch().getId();
-            Match match = matchService.find(matchId);
-            MatchDTO matchDTO = new MatchDTO();
-            matchDTO.setId(match.getId());
-            dto.setMatch(matchDTO);
-        }
-
-        List<MatchOdds> matchOdds = matchOddsMapper.toEntity(matchOddsDTOs);
-        List<MatchOdds> updatedMatchOdds = matchOddsService.update(matchOdds);
-        return ResponseEntity.ok(matchOddsMapper.toDTO(updatedMatchOdds));
+        MatchOdds entity = MatchOddsMapper.toEntity(matchOddsDTO, match);
+        MatchOdds updated = matchOddsService.update(id, entity);
+        return ResponseEntity.ok(MatchOddsMapper.toDTO(updated));
     }
     // </editor-fold>
 
@@ -265,7 +207,7 @@ public class MatchOddsController {
         }
 
         MatchOdds updatedMatchOdds = matchOddsService.partialUpdate(id, updates);
-        return ResponseEntity.ok(matchOddsMapper.toDTO(updatedMatchOdds));
+        return ResponseEntity.ok(MatchOddsMapper.toDTO(updatedMatchOdds));
     }
     // </editor-fold>
 }

@@ -2,8 +2,8 @@ package com.example.matchmanagementapi.service;
 
 import com.example.matchmanagementapi.domain.Match;
 import com.example.matchmanagementapi.domain.Sport;
+import com.example.matchmanagementapi.exception.ResourceNotFoundException;
 import com.example.matchmanagementapi.repository.MatchRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -25,13 +25,9 @@ public class MatchService {
         return matchRepository.findAll();
     }
 
-    public List<Match> findAll(List<Long> ids){
-        return matchRepository.findAllById(ids);
-    }
-
     public Match find(Long id) {
         return matchRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Match not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Match not found with id: " + id));
     }
 
     public List<Match> searchMatches(
@@ -119,34 +115,23 @@ public class MatchService {
     // </editor-fold>
 
     // <editor-fold desc="UPDATE Methods">
-    public Match update(Long id, Match match){
-        Match existing = matchRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Match not found"));
+    public Match update(Long id, Match updated){
+        Match existing = find(id);
 
-        if(!((match.getTeamA() + "-" + match.getTeamB()).equals(match.getDescription()))){
-            match.setDescription(generateDescription(match.getTeamA(), match.getTeamB()));
+        if(!((updated.getTeamA() + "-" + updated.getTeamB()).equals(updated.getDescription()))){
+            updated.setDescription(generateDescription(updated.getTeamA(), updated.getTeamB()));
         }
 
-        existing.setDescription(match.getDescription());
-        existing.setMatchDate(match.getMatchDate());
-        existing.setMatchTime(match.getMatchTime());
-        existing.setTeamA(match.getTeamA());
-        existing.setTeamB(match.getTeamB());
-        existing.setSport(match.getSport());
+        existing.setDescription(updated.getDescription());
+        existing.setMatchDate(updated.getMatchDate());
+        existing.setMatchTime(updated.getMatchTime());
+        existing.setTeamA(updated.getTeamA());
+        existing.setTeamB(updated.getTeamB());
+        existing.setSport(updated.getSport());
 
         System.out.println("Saving match: " + existing);
 
         return matchRepository.save(existing);
-    }
-
-    public List<Match> update(List<Match> matchList){
-        for (Match match : matchList){
-            if(!((match.getTeamA() + "-" + match.getTeamB()).equals(match.getDescription()))){
-                match.setDescription(generateDescription(match.getTeamA(), match.getTeamB()));
-            }
-        }
-
-        return matchRepository.saveAll(matchList);
     }
 
     public Match partialUpdate(Long id, Map<String, Object> updates) {

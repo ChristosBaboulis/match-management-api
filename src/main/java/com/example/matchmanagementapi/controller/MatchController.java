@@ -23,7 +23,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MatchController {
     private final MatchService matchService;
-    private final MatchMapper matchMapper;
     private final ObjectMapper objectMapper;
 
     // <editor-fold desc="GET endpoints">
@@ -56,26 +55,11 @@ public class MatchController {
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime matchTimeBefore,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime matchTimeAfter
     ) {
-        List<MatchDTO> result = matchMapper.toDTO(matchService.searchMatches(
+        List<MatchDTO> result = MatchMapper.toDTO(matchService.searchMatches(
                 description, teamA, teamB, sport,
                 matchDate, matchDateBefore , matchDateAfter,
                 matchTime, matchTimeBefore, matchTimeAfter
         ));
-        return ResponseEntity.ok(result);
-    }
-
-    /**
-     * Returns a list of matches by their IDs.
-     * Supports both:
-     * - GET /api/matches/byIdsList?ids=1&ids=2&ids=3
-     * - GET /api/matches/byIdsList?ids=1,2,3
-     *
-     * @param ids List of match IDs to retrieve.
-     * @return ResponseEntity containing the list of MatchDTOs.
-     */
-    @GetMapping("/byIdsList")
-    public ResponseEntity<List<MatchDTO>> getMatchesByMatchIds(@RequestParam List<Long> ids){
-        List<MatchDTO> result = matchMapper.toDTO(matchService.findAll(ids));
         return ResponseEntity.ok(result);
     }
 
@@ -89,7 +73,7 @@ public class MatchController {
      */
     @GetMapping("/{id}")
     public ResponseEntity<MatchDTO> getMatchById(@PathVariable Long id){
-        MatchDTO result = matchMapper.toDTO(matchService.find(id));
+        MatchDTO result = MatchMapper.toDTO(matchService.find(id));
         return ResponseEntity.ok(result);
     }
 
@@ -150,15 +134,15 @@ public class MatchController {
             // Batch insert
             List<MatchDTO> matchDTOs = objectMapper.convertValue(body, new TypeReference<>() {
             });
-            List<Match> matches = matchMapper.toEntity(matchDTOs);
+            List<Match> matches = MatchMapper.toEntity(matchDTOs);
             List<Match> saved = matchService.saveAll(matches);
-            return ResponseEntity.ok(matchMapper.toDTO(saved));
+            return ResponseEntity.ok(MatchMapper.toDTO(saved));
         } else {
             // Single insert
             MatchDTO matchDTO = objectMapper.convertValue(body, MatchDTO.class);
-            Match match = matchMapper.toEntity(matchDTO);
+            Match match = MatchMapper.toEntity(matchDTO);
             Match saved = matchService.save(match);
-            return ResponseEntity.ok(matchMapper.toDTO(saved));
+            return ResponseEntity.ok(MatchMapper.toDTO(saved));
         }
     }
     // </editor-fold>
@@ -204,24 +188,9 @@ public class MatchController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<MatchDTO> updateMatch(@PathVariable Long id, @RequestBody MatchDTO matchDTO){
-        Match match = matchMapper.toEntity(matchDTO);
+        Match match = MatchMapper.toEntity(matchDTO);
         Match updatedMatch = matchService.update(id, match);
-        return ResponseEntity.ok(matchMapper.toDTO(updatedMatch));
-    }
-
-    /**
-     * Updates a list of matches in the database.
-     * Example: PUT /api/matches/batch
-     * Request Body: [ { "id": 1, "description": "OSFP-PAO", ... }, ... ]
-     *
-     * @param matchDTOs The list of MatchDTOs to update.
-     * @return ResponseEntity containing the list of updated MatchDTOs.
-     */
-    @PutMapping("/batch")
-    public ResponseEntity<List<MatchDTO>> updateMatches(@RequestBody List<MatchDTO> matchDTOs){
-        List<Match> matches = matchMapper.toEntity(matchDTOs);
-        List<Match> updatedMatches = matchService.update(matches);
-        return ResponseEntity.ok(matchMapper.toDTO(updatedMatches));
+        return ResponseEntity.ok(MatchMapper.toDTO(updatedMatch));
     }
     // </editor-fold>
 
@@ -238,7 +207,7 @@ public class MatchController {
     @PatchMapping("/{id}")
     public ResponseEntity<MatchDTO> patchMatch(@PathVariable Long id, @RequestBody Map<String, Object> updates) {
         Match updatedMatch = matchService.partialUpdate(id, updates);
-        return ResponseEntity.ok(matchMapper.toDTO(updatedMatch));
+        return ResponseEntity.ok(MatchMapper.toDTO(updatedMatch));
     }
     // </editor-fold>
 }

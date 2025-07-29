@@ -101,21 +101,6 @@
             <optional>true</optional>   <!-- Not required at runtime, used only during compilation -->
         </dependency>
 
-        <!-- MapStruct: generates mappers for DTO - Entity conversion using annotations (no runtime overhead) -->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct</artifactId>
-            <version>1.5.5.Final</version>
-        </dependency>
-
-        <!-- MapStruct Processor: required to generate mapping implementations during compilation -->
-        <dependency>
-            <groupId>org.mapstruct</groupId>
-            <artifactId>mapstruct-processor</artifactId>
-            <version>1.5.5.Final</version>
-            <scope>provided</scope>
-        </dependency>
-
         <!-- Spring Boot Test Starter: provides JUnit, Mockito, Spring Test utilities for unit and integration testing -->
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -153,13 +138,6 @@
                         <path>
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok</artifactId>
-                        </path>
-
-                        <!-- MapStruct annotation processor -->
-                        <path>
-                            <groupId>org.mapstruct</groupId>
-                            <artifactId>mapstruct-processor</artifactId>
-                            <version>1.5.5.Final</version>
                         </path>
                     </annotationProcessorPaths>
                 </configuration>

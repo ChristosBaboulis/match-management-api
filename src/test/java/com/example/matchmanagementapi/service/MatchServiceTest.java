@@ -27,10 +27,6 @@ public class MatchServiceTest extends Initializer {
 
         List<Match> matchList = matchService.findAll();
         Assertions.assertEquals(1, matchList.size());
-
-        List<Long> ids = List.of(matchList.getFirst().getId());
-        List<Match> matchList2 = matchService.findAll(ids);
-        Assertions.assertEquals(1, matchList2.size());
     }
 
     @Test
@@ -127,55 +123,36 @@ public class MatchServiceTest extends Initializer {
         Assertions.assertEquals(0, matchList.size());
     }
 
-//    @Test
-//    void testUpdate(){
-//        Match savedMatch = matchService.save(match);
-//        Assertions.assertNotNull(savedMatch);
-//
-//        savedMatch.setSport(Sport.Basketball);
-//        Match updatedMatch = matchService.update(1L, savedMatch);
-//        Assertions.assertEquals(Sport.Basketball, updatedMatch.getSport());
-//
-//        savedMatch.setTeamA("TeamA");
-//        updatedMatch = matchService.update(1L, savedMatch);
-//        Assertions.assertEquals("TeamA", updatedMatch.getTeamA());
-//    }
-
     @Test
-    void testUpdateMass(){
-        List<Match> matches = new ArrayList<>();
-        for (int i=0; i<5; i++){
-            Match m = new Match(
-                    "Team" + i + "-Team" + (i+1),
-                    testMatchDate,
-                    testMatchTime,
-                    "Team" + i,
-                    "Team" + (i+1),
-                    testSport
-            );
-            matches.add(m);
-        }
+    void testUpdate_shouldRegenerateDescriptionAndUpdateAllFields() {
+        Match original = new Match(
+                "OSFP-PAO",
+                testMatchDate,
+                testMatchTime,
+                "OSFP",
+                "PAO",
+                testSport
+        );
+        Match saved = matchService.save(original);
 
-        List<Match> savedMatches = matchService.saveAll(matches);
-        for(Match m : savedMatches){
-            m.setSport(Sport.Basketball);
-        }
+        Match incoming = new Match();
+        incoming.setTeamA("AEK");
+        incoming.setTeamB("ARIS");
+        incoming.setDescription("Wrong-Description"); // θα αγνοηθεί
+        incoming.setMatchDate(testMatchDate.plusDays(1));
+        incoming.setMatchTime(testMatchTime.plusHours(2));
+        incoming.setSport(Sport.Basketball);
 
-        List<Match> updatedMatches = matchService.update(savedMatches);
-        for(Match m : updatedMatches){
-            Assertions.assertEquals(Sport.Basketball, m.getSport());
-        }
+        Match updated = matchService.update(saved.getId(), incoming);
 
-        List<Match> savedMatches2 = matchService.saveAll(matches);
-        for(Match m : savedMatches2){
-            m.setTeamA("TeamA");
-        }
-
-        List<Match> updatedMatches2 = matchService.update(savedMatches2);
-        for(Match m : updatedMatches2){
-            Assertions.assertEquals("TeamA", m.getTeamA());
-        }
+        Assertions.assertEquals("AEK", updated.getTeamA());
+        Assertions.assertEquals("ARIS", updated.getTeamB());
+        Assertions.assertEquals("AEK-ARIS", updated.getDescription()); // regenerated
+        Assertions.assertEquals(testMatchDate.plusDays(1), updated.getMatchDate());
+        Assertions.assertEquals(testMatchTime.plusHours(2), updated.getMatchTime());
+        Assertions.assertEquals(Sport.Basketball, updated.getSport());
     }
+
 
     @Test
     void testPartialUpdate_teamAChange_updatesDescriptionAutomatically() {

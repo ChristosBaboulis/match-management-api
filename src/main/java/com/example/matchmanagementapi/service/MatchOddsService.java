@@ -2,8 +2,8 @@ package com.example.matchmanagementapi.service;
 
 import com.example.matchmanagementapi.domain.Match;
 import com.example.matchmanagementapi.domain.MatchOdds;
+import com.example.matchmanagementapi.exception.ResourceNotFoundException;
 import com.example.matchmanagementapi.repository.MatchOddsRepository;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -23,13 +23,9 @@ public class MatchOddsService {
         return matchOddsRepository.findAll();
     }
 
-    public List<MatchOdds> findAll(List<Long> ids) {
-        return matchOddsRepository.findAllById(ids);
-    }
-
     public MatchOdds find(Long id){
         return matchOddsRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Match odds not found with id: " + id));
+                .orElseThrow(() -> new ResourceNotFoundException("Match odds not found with id: " + id));
     }
 
     public List<MatchOdds> searchMatchOdds(
@@ -75,6 +71,7 @@ public class MatchOddsService {
     }
 
     public MatchOdds save(MatchOdds matchOdds){
+        matchService.find(matchOdds.getMatch().getId());
         return matchOddsRepository.save(matchOdds);
     }
     // </editor-fold>
@@ -92,12 +89,15 @@ public class MatchOddsService {
     // </editor-fold>
 
     // <editor-fold desc="UPDATE Methods">
-    public MatchOdds update(MatchOdds matchOdds){
-        return matchOddsRepository.save(matchOdds);
-    }
+    public MatchOdds update(Long id, MatchOdds updated){
+        MatchOdds odds = find(id);
 
-    public List<MatchOdds> update(List<MatchOdds> matchOddsList){
-        return matchOddsRepository.saveAll(matchOddsList);
+        odds.setSpecifier(updated.getSpecifier());
+        odds.setOdd(updated.getOdd());
+        Match match = matchService.find(updated.getMatch().getId());
+        odds.setMatch(match);
+
+        return matchOddsRepository.save(odds);
     }
 
     public MatchOdds partialUpdate(Long id, Map<String, Object> updates) {

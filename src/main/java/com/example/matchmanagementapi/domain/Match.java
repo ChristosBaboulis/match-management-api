@@ -17,7 +17,6 @@ import java.time.LocalTime;
 public class Match {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Setter(AccessLevel.PROTECTED)
     private Long id;
 
     @NonNull
@@ -42,6 +41,6 @@ public class Match {
 
     @NonNull
     @Column(name = "sport", nullable = false)
-    @Enumerated(EnumType.ORDINAL)
+    @Enumerated(EnumType.STRING)
     private Sport sport;
 }
