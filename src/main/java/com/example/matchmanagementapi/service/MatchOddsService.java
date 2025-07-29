@@ -81,7 +81,7 @@ public class MatchOddsService {
                         o.getMatch().getId()
                 ))
                 .map(o -> {
-                    matchService.find(o.getMatch().getId()); // προληπτικός έλεγχος ότι υπάρχει
+                    matchService.find(o.getMatch().getId());
                     return o;
                 })
                 .collect(Collectors.collectingAndThen(Collectors.toList(), matchOddsRepository::saveAll));

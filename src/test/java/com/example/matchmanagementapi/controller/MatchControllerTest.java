@@ -32,9 +32,6 @@ class MatchControllerTest {
     @Autowired
     private MatchService matchService;
 
-    @Autowired
-    private MatchOddsService matchOddsService;
-
     @TestConfiguration
     static class MockConfig {
 
