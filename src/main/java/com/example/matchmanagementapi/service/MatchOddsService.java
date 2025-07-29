@@ -60,6 +60,10 @@ public class MatchOddsService {
         return matchOddsRepository.findAll(spec);
     }
 
+    public List<MatchOdds> getOddsForMatch(Long matchId) {
+        return matchOddsRepository.findByMatchId(matchId);
+    }
+
     public long getRecordsCount(){
         return matchOddsRepository.count();
     }

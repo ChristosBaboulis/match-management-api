@@ -1,0 +1,719 @@
+{
+	"info": {
+		"_postman_id": "f417fd40-9070-4a69-893a-f63b1167b22f",
+		"name": "match-management-api",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "43203133"
+	},
+	"item": [
+		{
+			"name": "MATCH",
+			"item": [
+				{
+					"name": "GET using Query Params",
+					"item": [
+						{
+							"name": "Description",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{MATCH_BASE_URL}}?description=OSFP-PAO",
+									"host": [
+										"{{MATCH_BASE_URL}}"
+									],
+									"query": [
+										{
+											"key": "description",
+											"value": "OSFP-PAO"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "TeamA",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{MATCH_BASE_URL}}?teamA=AEK",
+									"host": [
+										"{{MATCH_BASE_URL}}"
+									],
+									"query": [
+										{
+											"key": "teamA",
+											"value": "AEK"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Match Date",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{MATCH_BASE_URL}}?matchDate=2025-08-02",
+									"host": [
+										"{{MATCH_BASE_URL}}"
+									],
+									"query": [
+										{
+											"key": "matchDate",
+											"value": "2025-08-02"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Match Date After",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{MATCH_BASE_URL}}?matchDateAfter=2025-08-01",
+									"host": [
+										"{{MATCH_BASE_URL}}"
+									],
+									"query": [
+										{
+											"key": "matchDateAfter",
+											"value": "2025-08-01"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Match Date Before",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{MATCH_BASE_URL}}?matchDateBefore=2025-08-02",
+									"host": [
+										"{{MATCH_BASE_URL}}"
+									],
+									"query": [
+										{
+											"key": "matchDateBefore",
+											"value": "2025-08-02"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Match Time",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{MATCH_BASE_URL}}?matchTime=20:00:00",
+									"host": [
+										"{{MATCH_BASE_URL}}"
+									],
+									"query": [
+										{
+											"key": "matchTime",
+											"value": "20:00:00"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Match Time After",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{MATCH_BASE_URL}}?matchTimeAfter=20:00:00",
+									"host": [
+										"{{MATCH_BASE_URL}}"
+									],
+									"query": [
+										{
+											"key": "matchTimeAfter",
+											"value": "20:00:00"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Team A, team B, Match Date",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{MATCH_BASE_URL}}?teamA=OSFP&teamB=PAO&matchDate=2025-08-01",
+									"host": [
+										"{{MATCH_BASE_URL}}"
+									],
+									"query": [
+										{
+											"key": "teamA",
+											"value": "OSFP"
+										},
+										{
+											"key": "teamB",
+											"value": "PAO"
+										},
+										{
+											"key": "matchDate",
+											"value": "2025-08-01"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "POST /api/matches (Single Insert)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"description\": \"OSFP-PAO\",\r\n  \"matchDate\": \"2025-08-01\",\r\n  \"matchTime\": \"20:00:00\",\r\n  \"teamA\": \"OSFP\",\r\n  \"teamB\": \"PAO\",\r\n  \"sport\": \"Football\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MATCH_BASE_URL}}",
+							"host": [
+								"{{MATCH_BASE_URL}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /api/matches (Batch Insert)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n  {\r\n    \"description\": \"OSFP-PAO\",\r\n    \"matchDate\": \"2025-09-01\",\r\n    \"matchTime\": \"20:00:00\",\r\n    \"teamA\": \"OSFP\",\r\n    \"teamB\": \"PAO\",\r\n    \"sport\": \"Football\"\r\n  },\r\n  {\r\n    \"description\": \"AEK-ARIS\",\r\n    \"matchDate\": \"2025-08-02\",\r\n    \"matchTime\": \"21:00:00\",\r\n    \"teamA\": \"AEK\",\r\n    \"teamB\": \"ARIS\",\r\n    \"sport\": \"Football\"\r\n  }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MATCH_BASE_URL}}",
+							"host": [
+								"{{MATCH_BASE_URL}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /api/matches",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{MATCH_BASE_URL}}",
+							"host": [
+								"{{MATCH_BASE_URL}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /api/matches/{id}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{MATCH_BASE_URL}}/1",
+							"host": [
+								"{{MATCH_BASE_URL}}"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /api/matches/count",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{MATCH_BASE_URL}}/count",
+							"host": [
+								"{{MATCH_BASE_URL}}"
+							],
+							"path": [
+								"count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET  /api/matches/{id}/odds",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{MATCH_BASE_URL}}/1/odds",
+							"host": [
+								"{{MATCH_BASE_URL}}"
+							],
+							"path": [
+								"1",
+								"odds"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /api/matches/{id}",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{MATCH_BASE_URL}}/2",
+							"host": [
+								"{{MATCH_BASE_URL}}"
+							],
+							"path": [
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /api/matches (Batch Delete)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[3,4]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MATCH_BASE_URL}}",
+							"host": [
+								"{{MATCH_BASE_URL}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT /api/matches/{id}",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"description\": \"OSFP-PAO\",\r\n  \"matchDate\": \"2025-08-05\",\r\n  \"matchTime\": \"21:00:00\",\r\n  \"teamA\": \"OSFP\",\r\n  \"teamB\": \"PAO\",\r\n  \"sport\": \"Football\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MATCH_BASE_URL}}/1",
+							"host": [
+								"{{MATCH_BASE_URL}}"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH /api/matches/{id}",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"teamA\": \"AEK\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MATCH_BASE_URL}}/1",
+							"host": [
+								"{{MATCH_BASE_URL}}"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "MATCH_ODDS",
+			"item": [
+				{
+					"name": "GET using Query Params",
+					"item": [
+						{
+							"name": "Match Id",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{MATCH_ODDS_BASE_URL}}?matchId=1",
+									"host": [
+										"{{MATCH_ODDS_BASE_URL}}"
+									],
+									"query": [
+										{
+											"key": "matchId",
+											"value": "1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Odd",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{MATCH_ODDS_BASE_URL}}?odd=3.1",
+									"host": [
+										"{{MATCH_ODDS_BASE_URL}}"
+									],
+									"query": [
+										{
+											"key": "odd",
+											"value": "3.1"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Odd Over",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{MATCH_ODDS_BASE_URL}}?specifier=1&oddOver=2.0",
+									"host": [
+										"{{MATCH_ODDS_BASE_URL}}"
+									],
+									"query": [
+										{
+											"key": "specifier",
+											"value": "1"
+										},
+										{
+											"key": "oddOver",
+											"value": "2.0"
+										}
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "Specifier",
+							"request": {
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{MATCH_ODDS_BASE_URL}}?specifier=X",
+									"host": [
+										"{{MATCH_ODDS_BASE_URL}}"
+									],
+									"query": [
+										{
+											"key": "specifier",
+											"value": "X"
+										}
+									]
+								}
+							},
+							"response": []
+						}
+					]
+				},
+				{
+					"name": "POST /api/matchOdds (Single Insert)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"specifier\": \"1\",\r\n  \"odd\": 2.5,\r\n  \"matchId\": 1\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MATCH_ODDS_BASE_URL}}",
+							"host": [
+								"{{MATCH_ODDS_BASE_URL}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "POST /api/matchOdds (Batch Insert)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n  {\r\n    \"specifier\": \"2\",\r\n    \"odd\": 2.6,\r\n    \"matchId\": 1\r\n  },\r\n  {\r\n    \"specifier\": \"X\",\r\n    \"odd\": 3.1,\r\n    \"matchId\": 1\r\n  }\r\n]\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MATCH_ODDS_BASE_URL}}/batch",
+							"host": [
+								"{{MATCH_ODDS_BASE_URL}}"
+							],
+							"path": [
+								"batch"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET api/matchOdds",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{MATCH_ODDS_BASE_URL}}",
+							"host": [
+								"{{MATCH_ODDS_BASE_URL}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /api/matchOdds/{id}",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{MATCH_ODDS_BASE_URL}}/1",
+							"host": [
+								"{{MATCH_ODDS_BASE_URL}}"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GET /api/matchOdds/count",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{MATCH_ODDS_BASE_URL}}/count",
+							"host": [
+								"{{MATCH_ODDS_BASE_URL}}"
+							],
+							"path": [
+								"count"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /api/matchOdds/{id}",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n  {\r\n    \"specifier\": \"1\",\r\n    \"odd\": 2.5,\r\n    \"match\": {\r\n      \"id\": 1\r\n    }\r\n  },\r\n  {\r\n    \"specifier\": \"X\",\r\n    \"odd\": 3.1,\r\n    \"match\": {\r\n      \"id\": 1\r\n    }\r\n  }\r\n]\r\n"
+						},
+						"url": {
+							"raw": "{{MATCH_ODDS_BASE_URL}}/2",
+							"host": [
+								"{{MATCH_ODDS_BASE_URL}}"
+							],
+							"path": [
+								"2"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DELETE /api/matchOdds (Batch Delete)",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[2,3]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MATCH_ODDS_BASE_URL}}",
+							"host": [
+								"{{MATCH_ODDS_BASE_URL}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PUT api/matchOdds/{id}",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"matchId\": 1,\r\n  \"specifier\": \"2\",\r\n  \"odd\": 1.80 \r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MATCH_ODDS_BASE_URL}}/1",
+							"host": [
+								"{{MATCH_ODDS_BASE_URL}}"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PATCH api/matchOdds/{id}",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n  \"odd\": 2.9\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{MATCH_ODDS_BASE_URL}}/1",
+							"host": [
+								"{{MATCH_ODDS_BASE_URL}}"
+							],
+							"path": [
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "MATCH_BASE_URL",
+			"value": "http://localhost:8080/api/matches",
+			"type": "string"
+		},
+		{
+			"key": "MATCH_ODDS_BASE_URL",
+			"value": "http://localhost:8080/api/matchOdds",
+			"type": "string"
+		}
+	]
+}

@@ -1,9 +1,13 @@
 package com.example.matchmanagementapi.controller;
 
 import com.example.matchmanagementapi.domain.Match;
+import com.example.matchmanagementapi.domain.MatchOdds;
 import com.example.matchmanagementapi.domain.Sport;
 import com.example.matchmanagementapi.dto.MatchDTO;
 import com.example.matchmanagementapi.dto.MatchMapper;
+import com.example.matchmanagementapi.dto.MatchOddsDTO;
+import com.example.matchmanagementapi.dto.MatchOddsMapper;
+import com.example.matchmanagementapi.service.MatchOddsService;
 import com.example.matchmanagementapi.service.MatchService;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -23,6 +27,7 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class MatchController {
     private final MatchService matchService;
+    private final MatchOddsService matchOddsService;
     private final ObjectMapper objectMapper;
 
     // <editor-fold desc="GET endpoints">
@@ -87,6 +92,19 @@ public class MatchController {
     public ResponseEntity<Long> getCount(){
         long result = matchService.getRecordsCount();
         return ResponseEntity.ok(result);
+    }
+
+    /**
+     * Retrieves all match odds for a given match ID.
+     * Example: GET /api/matches/{id}/odds
+     *
+     * @param id The ID of the match whose odds are to be retrieved.
+     * @return ResponseEntity containing the list of MatchOddsDTOs.
+     */
+    @GetMapping("/{id}/odds")
+    public ResponseEntity<List<MatchOddsDTO>> getOddsForMatch(@PathVariable Long id) {
+        List<MatchOdds> odds = matchOddsService.getOddsForMatch(id);
+        return ResponseEntity.ok(MatchOddsMapper.toDTO(odds));
     }
     // </editor-fold>
 

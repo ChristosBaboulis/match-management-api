@@ -3,6 +3,7 @@ package com.example.matchmanagementapi.controller;
 import com.example.matchmanagementapi.domain.Match;
 import com.example.matchmanagementapi.domain.Sport;
 import com.example.matchmanagementapi.dto.MatchDTO;
+import com.example.matchmanagementapi.service.MatchOddsService;
 import com.example.matchmanagementapi.service.MatchService;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -31,12 +32,20 @@ class MatchControllerTest {
     @Autowired
     private MatchService matchService;
 
+    @Autowired
+    private MatchOddsService matchOddsService;
+
     @TestConfiguration
     static class MockConfig {
 
         @Bean
         public MatchService matchService() {
             return Mockito.mock(MatchService.class);
+        }
+
+        @Bean
+        public MatchOddsService matchOddsService() {
+            return Mockito.mock(MatchOddsService.class);
         }
     }
 

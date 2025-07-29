@@ -41,6 +41,6 @@ public class Match {
 
     @NonNull
     @Column(name = "sport", nullable = false)
-    @Enumerated(EnumType.STRING)
+    @Enumerated(EnumType.ORDINAL)
     private Sport sport;
 }
